@@ -1,11 +1,11 @@
 import Image from "next/image";
 import ozove from "@/../public/home/icons/ozove.png"; // replace with your actual path
 import shieldIcon from "@/../public/home/icons/shield.png"; // replace with your actual path
-import p1 from "@/../public/driver/captain/Section2/p1.png"; // replace with your actual path
-import p2 from "@/../public/driver/captain/Section2/p2.png"; // replace with your actual path
-import p3 from "@/../public/driver/captain/Section2/p3.png"; // replace with your actual path
-import p4 from "@/../public/driver/captain/Section2/p4.png"; // replace with your actual path
-import p5 from "@/../public/driver/captain/Section2/p5.png"; // replace with your actual path
+import p1 from "@/../public/driver/captain/Section2/p1.svg"; // replace with your actual path
+import p2 from "@/../public/driver/captain/Section2/p2.svg"; // replace with your actual path
+import p3 from "@/../public/driver/captain/Section2/p3.svg"; // replace with your actual path
+import p4 from "@/../public/driver/captain/Section2/p4.svg"; // replace with your actual path
+import p5 from "@/../public/driver/captain/Section2/p5.svg"; // replace with your actual path
 
 const Section2 = () => {
   return (
@@ -31,9 +31,9 @@ const Section2 = () => {
               <Image
                 src={p1}
                 alt="Maximize Your Earnings"
-                className="mt-4  lg:ml-4 w-[80px] h-[80px]"
-                width={100}
-                height={40}
+                className="lg:ml-4 "
+                width={80}
+                height={80}
               />
             </div>
             <div className="bg-customYellow flex flex-row text-black p-6 rounded-lg shadow-lg h-[200px]">
@@ -49,9 +49,9 @@ const Section2 = () => {
               <Image
                 src={p2}
                 alt="Embrace Entrepreneurship"
-                className="mt-4  lg:ml-4 w-[80px] h-[100px]"
-                width={100}
-                height={20}
+                className="mt-4  lg:ml-4 "
+                width={80}
+                height={80}
               />
             </div>
           </div>
@@ -59,7 +59,7 @@ const Section2 = () => {
             <Image
               src={p3}
               alt="Integrated Mobility Solutions"
-              className=" lg:w-[600px] lg:h-[400px] w-full h-[300px] object-cover lg:rounded-xl rounded-lg"
+              className=" lg:w-[600px] lg:h-[408px] w-full h-[300px] object-cover lg:rounded-xl rounded-lg"
             />
           </div>
           <div className="flex flex-col gap-2 w-full lg:w-1/3">
@@ -76,12 +76,12 @@ const Section2 = () => {
               <Image
                 src={p4}
                 alt="Enjoy Unparalleled Flexibility"
-                className="mt-4  lg:ml-4 w-[80px] h-[100px]"
-                width={100}
-                height={20}
+                className="mt-4  lg:ml-4 "
+                width={80}
+                height={80}
               />
             </div>
-            <div className="bg-graish flex flex-row text-white p-6 rounded-lg shadow-lg">
+            <div className="bg-graish flex flex-row text-white p-6 rounded-lg shadow-lg h-[200px]">
               <div>
                 <h3 className="text-xl font-bold mb-4 text-customYellow">
                   Experience Swift Payouts
@@ -95,8 +95,8 @@ const Section2 = () => {
                 src={p5}
                 alt="Experience Swift Payouts"
                 className="mt-4  lg:ml-4 w-[80px] h-[130px]"
-                width={100}
-                height={20}
+                width={80}
+                height={80}
               />
             </div>
           </div>

@@ -1,6 +1,6 @@
 // pages/index.tsx
 import Head from "next/head";
-import image from "@/../public/ride/individual/p1.png";
+import image from "@/../public/ride/individual/section1.svg";
 import Image from "next/image";
 
 const Section1 = () => {
@@ -21,7 +21,7 @@ const Section1 = () => {
           <p className="text-lg mb-8">
             Customized Group Rides For Every Occasion
           </p>
-          <button className="bg-white hover:bg-orange-700 text-black font-bold py-2 px-4 rounded-xl">
+          <button className="bg-white hover:bg-customYellow text-black font-bold py-2 px-4 rounded-xl">
             Book Now
           </button>
         </div>

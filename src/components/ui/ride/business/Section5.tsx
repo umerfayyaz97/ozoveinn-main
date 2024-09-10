@@ -14,8 +14,8 @@ export default function Section6() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex flex-col pt-10 lg:px-32">
-        <p className="text-center text-black text-2xl font-bold mb-12">
+      <main className="flex flex-col pt-10 lg:px-32 ">
+        <p className="text-center text-black text-2xl px-10 lg:px-0 font-extrabold mb-12">
           More Efficient Than Owning <br /> Your Own Fleet
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mx-12">

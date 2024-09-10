@@ -1,9 +1,7 @@
 "use client";
 import Head from "next/head";
 import Image from "next/image";
-import mobileview from "@/../public/home/section6.png"; // Ensure the image is in the public folder
-
-import { useState } from "react";
+import mobileview from "@/../public/driver/captain/section4.svg"; // Ensure the image is in the public folder
 
 export default function Section4() {
   return (

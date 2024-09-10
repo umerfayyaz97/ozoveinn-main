@@ -1,9 +1,9 @@
 import Image from "next/image";
-import midImage from "@/../public/ride/business/section2.png";
-import logo1 from "@/../public/ride/individual/icons/section2/i1.png";
-import logo2 from "@/../public/ride/individual/icons/section2/i2.png";
-import logo3 from "@/../public/ride/individual/icons/section2/i3.png";
-import logo4 from "@/../public/ride/individual/icons/section2/i4.png";
+import midImage from "@/../public/ride/business/section2.svg";
+import logo1 from "@/../public/ride/business/icons/section2/i1.svg";
+import logo2 from "@/../public/ride/business/icons/section2/i2.svg";
+import logo3 from "@/../public/ride/business/icons/section2/i3.svg";
+import logo4 from "@/../public/ride/business/icons/section2/i4.svg";
 
 const Section2 = () => {
   return (
@@ -11,7 +11,7 @@ const Section2 = () => {
       <div className="grid grid-cols-1 lg:grid-cols-4 ">
         {/* First Column */}
         <div className="flex flex-col ">
-          <div className="bg-customYellow text-white p-4 shadow-md h-[240px] flex flex-col justify-center">
+          <div className="bg-graish text-customYellow p-4 shadow-md h-[240px] flex flex-col justify-center">
             <h3 className="text-2xl lg:text-4xl font-bold mb-2">
               Why Choose OZ OVE?
             </h3>
@@ -55,7 +55,7 @@ const Section2 = () => {
             </div>
           </div>
 
-          <div className="bg-white  hidden text-black p-4 shadow-md h-[240px] lg:flex flex-col">
+          <div className="bg-white  hidden text-black p-4 shadow-md h-[160px] lg:flex flex-col">
             <div className="lg:flex items-center mb-2">
               <Image
                 src={logo1}
@@ -88,7 +88,7 @@ const Section2 = () => {
               className="w-full h-[240px] object-cover"
             />
           </div>
-          <div className="bg-graish text-white p-4 shadow-md h-[240px] lg:flex hidden flex-col">
+          <div className="bg-graish text-white p-4 shadow-md h-[160px] lg:flex hidden flex-col">
             <div className="flex items-center mb-2">
               <Image
                 src={logo2}
@@ -128,7 +128,7 @@ const Section2 = () => {
             </p>
           </div>
           <div className="flex flex-row  lg:space-y-0 ">
-            <div className="bg-white text-black p-4 shadow-md h-[240px] flex flex-col">
+            <div className="bg-white text-black p-4 shadow-md lg:h-[160px] h-[240px] flex flex-col">
               <div className="lg:flex items-center mb-2">
                 <Image
                   src={logo3}
@@ -145,7 +145,7 @@ const Section2 = () => {
                 Customize our offerings to align with your business’s needs..
               </p>
             </div>
-            <div className="bg-customYellow text-white p-4 shadow-md h-[240px] flex flex-col">
+            <div className="bg-customYellow text-white p-4 shadow-md lg:h-[160px] h-[240px] flex flex-col">
               <div className="lg:flex items-center mb-2">
                 <Image
                   src={logo4}

@@ -4,38 +4,68 @@ import Image from "next/image";
 import Link from "next/link";
 import p1 from "@/../public/footer/p1.png";
 import p2 from "@/../public/footer/p2.png";
+import i1 from "@/../public/footer/icons/f.svg";
+import i2 from "@/../public/footer/icons/insta.svg";
+import i3 from "@/../public/footer/icons/X.svg";
+import i4 from "@/../public/footer/icons/linkdien.svg";
 
 const Footer = () => {
   return (
-    <footer className="bg-graish text-white py-4 lg:mt-32">
-      <div className="container mx-auto py-8  px-6  flex flex-col md:flex-row justify-between lg:items-center">
-        <div className="flex flex-col md:flex-row lg:items-center">
+    <footer className="bg-graish text-white py-8 lg:pt-40 lg:px-20 px-8">
+      <div className="container mx-auto py-8 lg:px- flex flex-col md:flex-row justify-between lg:items-center text-center">
+        <div className="flex flex-col md:flex-row ">
           <Image src={logo} alt="OzOve Logo" width={200} height={200} />
-          {/* <span className="text-2xl font-bold ml-2">OzOve</span> */}
         </div>
         <div>
-          <div className="mt-5 md:mt-0  flex flex-col lg:items-center items-start">
+          <div className="mt-5 md:mt-0 flex flex-col lg:items-start items-start">
             <h5 className="font-bold mb-2">Get in touch</h5>
             <p>Information: info@ozove.com.au</p>
             <p>Media: Media@ozove.com.au</p>
             <div className="flex space-x-2 mt-2">
               <Link href="#">
-                <Facebook />
+                <Image
+                  src={i1}
+                  alt=""
+                  width={40}
+                  height={40}
+                  className="gray-y-4"
+                />
               </Link>
               <Link href="#">
-                <Instagram />
+                <Image
+                  src={i2}
+                  alt="App Store"
+                  width={40}
+                  height={40}
+                  className="gray-y-4"
+                />{" "}
               </Link>
               <Link href="#">
-                <Twitter />
+                <Image
+                  src={i3}
+                  alt="App Store"
+                  width={40}
+                  height={40}
+                  className="gray-y-4"
+                />{" "}
+              </Link>
+              <Link href="#">
+                <Image
+                  src={i4}
+                  alt="App Store"
+                  width={40}
+                  height={40}
+                  className="gray-y-4"
+                />{" "}
               </Link>
             </div>
           </div>
         </div>
       </div>
-      <div className="container mx-auto flex flex-col md:flex-row lg:justify-center gap-20 lg:px-0 px-6  lg:items-center">
-        <div className="lg:flex  flex-wrap lg:gap-5  lg:justify-center justify-start mt-5 md:mt-0">
+      <div className="container mx-auto flex flex-col md:flex-row lg:justify-between gap-20  lg:items-center">
+        <div className="lg:flex flex-wrap lg:gap-16 xl:gap-20 2xl:gap-28  lg:justify-between justify-start mt-5 md:mt-0">
           <div className="lg:mr-10 lg:py-0 py-2">
-            <Link href="#">
+            <Link href="/">
               <h5 className="font-bold mb-2">Home</h5>
             </Link>
           </div>
@@ -72,50 +102,60 @@ const Footer = () => {
           <div className="lg:mr-10 lg:py-0 py-2">
             <h5 className="font-bold mb-2">Company</h5>
             <ul>
-              {/* <li>
-                <Link href="#" passHref>
-                  <span className="cursor-pointer">About us</span>
-                </Link>
-              </li> */}
               <li>
                 <Link href="/contact" passHref>
                   <span className="cursor-pointer">Contact Us</span>
                 </Link>
               </li>
-              {/* <li>
-                <Link href="#" passHref>
-                  <span className="cursor-pointer">Careers</span>
-                </Link>
-              </li> */}
             </ul>
           </div>
-        </div>
+          <div className="lg:mr-10 lg:py-0 py-2">
+            <h5 className="font-bold mb-2">Legal</h5>
+            <ul>
+              <li>
+                <Link href="/contact" passHref>
+                  <span className="cursor-pointer">Privacy policy</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" passHref>
+                  <span className="cursor-pointer">Cookie policy</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" passHref>
+                  <span className="cursor-pointer">Terms & Conditions</span>
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-        <div className="lg:flex flex-col lg:items-center   hidden lg:mt-5 md:mt-0">
-          <Link href="/driver/captain">
-            <button className="border border-white py-2 px-4 rounded mb-3">
-              Become a Driver
-            </button>
-          </Link>
-        </div>
-
-        <div className=" lg:items-center lg:block hidden lg:mt-5 md:mt-0">
-          <h5 className="font-bold mb-2">Ride With Us</h5>
-          <div className="gap-y-2">
-            <Link href="#" passHref>
-              <span className="cursor-pointer gap-y-2">
-                <Image src={p1} alt="Google Play" width={120} height={40} />
-              </span>
-            </Link>
-            <Link href="#" passHref>
-              <span className="cursor-pointer gap-y-2">
-                <Image src={p2} alt="App Store" width={120} height={40} />
-              </span>
-            </Link>
+          <div className="lg:items-center  lg:py-0 py-2 ">
+            <h5 className="font-bold">Ride With Us</h5>
+            <p className="pb-2">Download the app</p>
+            <div>
+              <Link href="#" passHref>
+                <Image
+                  src={p1}
+                  alt="App Store"
+                  width={120}
+                  height={40}
+                  className="gray-y-4"
+                />
+              </Link>
+              <Link href="#" passHref>
+                <Image
+                  src={p2}
+                  alt="Google Play"
+                  width={120}
+                  height={40}
+                  className="mt-2"
+                />
+              </Link>
+            </div>
           </div>
         </div>
       </div>
-
       <div className="container mx-auto text-center mt-10">
         <p>OZ Ove © 2023 | Journeying Forward, Together.</p>
       </div>

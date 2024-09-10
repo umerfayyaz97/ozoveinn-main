@@ -10,7 +10,7 @@ const Section1 = () => {
         <title>Travel United</title>
       </Head>
       <div className="flex  lg:justify-between justify-start items-center lg:items-start">
-        <div className="lg:w-2/4 lg:justify-center text-start lg:items-start flex flex-col py-20 px-6   lg:px-40 ">
+        <div className="lg:w-2/4 lg:justify-center text-start lg:items-start flex flex-col lg:pt-40 pt-24 lg:pb-0 pb-10 px-6 lg:px-20   ">
           <h1 className="text-3xl font-bold ">
             <span className=" text-customYellow">Contact Us</span>
           </h1>

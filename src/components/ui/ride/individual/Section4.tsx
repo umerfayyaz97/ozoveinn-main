@@ -8,7 +8,7 @@ import logo6 from "@/../public/ride/individual/icons/section4/p6.png";
 
 const Section4 = () => {
   return (
-    <div className="bg-graish text-white py-12 lg:px-40 px-8">
+    <div className="bg-graish text-white py-12 lg:px-20 px-8">
       <h2 className="text-3xl font-bold text-center text-yellow-500 mb-4">
         Add-Ons
       </h2>

@@ -130,9 +130,10 @@ import {
   A11y,
   Autoplay,
 } from "swiper/modules";
-import i1 from "@/../public/home/section3/p1.png";
-import i2 from "@/../public/home/section3/p2.png";
-import i3 from "@/../public/home/section3/p3.png";
+import i1 from "@/../public/home/section3/p1.svg";
+import i2 from "@/../public/home/section3/p2.svg";
+import i3 from "@/../public/home/section3/p3.svg";
+import i4 from "@/../public/home/section3/p4.svg";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -163,14 +164,14 @@ const NextArrow = ({ onClick }: any) => (
 const Section3 = () => {
   return (
     <div className="flex justify-center items-center my-12 relative lg:py-0 sm:py-[5px]">
-      <div className="lg:h-[350px] lg:w-[1080px] w-[90vw] h-[150px]">
+      <div className="lg:h-[350px] lg:w-[1080px] w-[90vw] h-[130px]">
         {" "}
         {/* Adjusted width and height for mobile and desktop */}
         <Swiper
           modules={[Navigation, Pagination, Scrollbar, A11y, Autoplay]}
           spaceBetween={50}
           slidesPerView={1}
-          autoplay={{ delay: 1000 }}
+          autoplay={{ delay: 3000 }}
           navigation={{
             prevEl: ".custom-swiper-button-prev",
             nextEl: ".custom-swiper-button-next",
@@ -191,7 +192,7 @@ const Section3 = () => {
               />
             </div>
           </SwiperSlide>
-          {/* <SwiperSlide>
+          <SwiperSlide>
             <div className="relative h-full w-full">
               <Image
                 src={i2}
@@ -201,11 +202,22 @@ const Section3 = () => {
                 className="object-cover"
               />
             </div>
-          </SwiperSlide> */}
+          </SwiperSlide>
           <SwiperSlide>
             <div className="relative h-full w-full">
               <Image
                 src={i3}
+                alt="Image 3"
+                width={1080}
+                height={320}
+                className="object-cover"
+              />
+            </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div className="relative h-full w-full">
+              <Image
+                src={i4}
                 alt="Image 3"
                 width={1080}
                 height={320}

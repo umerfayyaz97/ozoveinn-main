@@ -1,14 +1,14 @@
 import Image from "next/image";
-import logo1 from "@/../public/ride/individual/icons/section4/p1.png";
-import logo2 from "@/../public/ride/individual/icons/section4/p2.png";
-import logo3 from "@/../public/ride/individual/icons/section4/p3.png";
-import logo4 from "@/../public/ride/individual/icons/section4/p4.png";
-import logo5 from "@/../public/ride/individual/icons/section4/p5.png";
-import logo6 from "@/../public/ride/individual/icons/section4/p6.png";
+import logo1 from "@/../public/ride/business/icons/section4/i1.svg";
+import logo2 from "@/../public/ride/business/icons/section4/i2.svg";
+import logo3 from "@/../public/ride/business/icons/section4/i3.svg";
+import logo4 from "@/../public/ride/business/icons/section4/i4.svg";
+import logo5 from "@/../public/ride/business/icons/section4/i5.svg";
+import logo6 from "@/../public/ride/business/icons/section4/i6.svg";
 
 const Section4 = () => {
   return (
-    <div className="bg-graish text-white py-12 lg:px-40 px-12">
+    <div className="bg-graish text-white py-12 lg:px-20 px-12">
       <p className="text-center mb-12  font-bold text-2xl">
         Our Corporate Account Advantages
       </p>

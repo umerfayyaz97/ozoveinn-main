@@ -1,7 +1,7 @@
 "use client";
 import Head from "next/head";
 import Image from "next/image";
-import mobileview from "@/../public/home/section6.png"; // Ensure the image is in the public folder
+import mobileview from "@/../public/ride/individual/section5.svg"; // Ensure the image is in the public folder
 
 import { useState } from "react";
 

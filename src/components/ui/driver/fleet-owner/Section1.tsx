@@ -150,7 +150,7 @@ const Section1 = () => {
               </div>
               <div className="flex items-center justify-center">
                 <button
-                  className="bg-customYellow hover:bg-customYellow text-white font-bold py-2 px-4 w-full rounded focus:outline-none focus:shadow-outline"
+                  className="bg-customYellow hover:bg-customYellow text-white font-bold py-2 px-4 w-full rounded rounded-t-none focus:outline-none focus:shadow-outline"
                   type="button"
                 >
                   Submit

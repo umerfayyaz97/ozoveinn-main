@@ -26,7 +26,7 @@ const NavLinks = ({ setOpen }: any) => {
         <div key={link.name}>
           <div className="px-3 text-left md:cursor-pointer font-semibold group relative ">
             <h1
-              className="py-3 flex justify-between items-center md:pr-0  pr-2 group lg:w-[132px] w-full"
+              className="py-3 flex lg:justify-center justify-between items-center md:pr-0  pr-2 group lg:w-[132px] w-full"
               onClick={() => handleHeadingClick(link.name)}
             >
               {link.name}
@@ -48,22 +48,23 @@ const NavLinks = ({ setOpen }: any) => {
             </h1>
             {link.submenu && (
               <div>
-                <div className="absolute -mt-6 mr-32 font-semibold z-50 hidden group-hover:md:block hover:md:block">
+                <div className="absolute -mt-6 font-semibold z-50 hidden group-hover:md:block hover:md:block">
                   <div className="py-3">
-                    <div className=" text-white bg-graish px-6 py-2 w-[140px] gap-10 rounded-lg shadow-2xl">
+                    <div className=" text-white bg-graish py-1 gap-10 rounded-lg shadow-2xl">
                       {link.sublinks.map((mysublinks, index) => (
                         <div key={index}>
                           {mysublinks.sublink.map((slink) => (
                             <li key={slink.name} className="text-sm my-2.5">
                               <Link
                                 href={slink.link}
-                                className="relative inline-block hover:text-primary"
+                                className="hover:text-primary"
                                 onClick={handleLinkClick}
                               >
-                                <span className="relative z-10">
+                                <p className="relative z-10 px-6 pb-1 border-b-2 border-b-customYellow">
                                   {slink.name}
-                                </span>
-                                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-customYellow transition-transform duration-300 transform scale-x-0 group-hover:scale-x-100" />
+                                </p>
+
+                                {/* <span className="absolute left-0 -bottom-1 w-full h-[2px] bg-customYellow transition-transform duration-300 transform scale-x-0 group-hover:scale-x-100" /> */}
                               </Link>
                             </li>
                           ))}

@@ -284,9 +284,9 @@ const Page1 = ({ setComponent }) => {
 
                 <button
                   // onClick={handleNextClick}
-                  className="w-full bg-yellow-500 text-black p-2 rounded-md font-bold"
+                  className="w-full bg-yellow-500 text-black p-2 font-bold"
                 >
-                  {/* Next */} Coming Soon...
+                  {/* Next */} Launching Soon
                 </button>
               </>
             )}
@@ -920,9 +920,9 @@ const Page1 = ({ setComponent }) => {
 
           <button
             // onClick={handleNextComponent}
-            className="w-full bg-yellow-500 text-black p-2 rounded-md font-bold"
+            className="w-full bg-yellow-500 text-black p-2 font-bold"
           >
-            {/* Next */} Launching Soon...
+            {/* Next */} Launching Soon
           </button>
         </div>
       </div>

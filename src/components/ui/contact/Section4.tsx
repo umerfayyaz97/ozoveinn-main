@@ -1,4 +1,5 @@
 import Image from "next/image";
+// import qrcode from "@/../public/home/section9.png";
 import qrcode from "/public/home/section9.png";
 import React from "react";
 

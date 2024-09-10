@@ -2,11 +2,11 @@ import Image from "next/image";
 import qrcode from "@/../public/home/section9.png"; // Ensure the image is in the public folder
 import React from "react";
 
-const Section9 = () => {
+const Section8 = () => {
   return (
     <div className="lg:h-40 lg:-mb-32 lg:bg-graish lg:w-full">
-      <div className="flex justify-center items-center  ">
-        <div className="lg:absolute bg-gradient-to-bl mt-0 lg:mt-32 from-qrs to-qrb lg:w-[800px] p-6 lg:rounded-md shadow-md flex justify-between items-center">
+      <div className="flex justify-center items-center ">
+        <div className="lg:absolute bg-gradient-to-bl lg:mt-28 from-qrs to-qrb lg:w-[800px] p-6 lg:rounded-md shadow-md flex justify-between items-center">
           <div>
             <h2 className="text-base lg:text-xl font-bold text-black mb-2">
               Unlock Exclusive Features and Enhance Your Experience
@@ -30,4 +30,4 @@ const Section9 = () => {
   );
 };
 
-export default Section9;
+export default Section8;

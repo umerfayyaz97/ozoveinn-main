@@ -1,5 +1,5 @@
 import Image from "next/image";
-import midImage from "@/../public/ride/individual/section2.png";
+import midImage from "@/../public/ride/individual/section2.svg";
 import logo1 from "@/../public/ride/individual/icons/section2/i1.png";
 import logo2 from "@/../public/ride/individual/icons/section2/i2.png";
 import logo3 from "@/../public/ride/individual/icons/section2/i3.png";
@@ -55,7 +55,7 @@ const Section2 = () => {
             </div>
           </div>
 
-          <div className="bg-white  hidden text-black p-4 shadow-md h-[240px] lg:flex flex-col">
+          <div className="bg-white  hidden text-black p-4 shadow-md h-[150px] lg:flex flex-col">
             <div className="flex items-center mb-2">
               <Image
                 src={logo1}
@@ -88,7 +88,7 @@ const Section2 = () => {
               className="w-full h-[240px] object-cover"
             />
           </div>
-          <div className="bg-graish text-white p-4 shadow-md h-[240px] lg:flex hidden flex-col">
+          <div className="bg-graish text-white p-4 shadow-md h-[150px] lg:flex hidden flex-col">
             <div className="flex items-center mb-2">
               <Image
                 src={logo2}
@@ -124,7 +124,7 @@ const Section2 = () => {
             </p>
           </div>
           <div className="flex flex-row  lg:space-y-0 ">
-            <div className="bg-white text-black p-4 shadow-md h-[240px] flex flex-col">
+            <div className="bg-white text-black p-4 shadow-md lg:h-[150px] h-[240px] flex flex-col">
               <div className="lg:flex items-center mb-2">
                 <Image
                   src={logo3}
@@ -139,7 +139,7 @@ const Section2 = () => {
               </div>
               <p>Effortlessly split fares among group members.</p>
             </div>
-            <div className="bg-customYellow text-white p-4 shadow-md h-[240px] flex flex-col">
+            <div className="bg-customYellow text-white p-4 shadow-md lg:h-[150px] h-[240px] flex flex-col">
               <div className="lg:flex items-center mb-2">
                 <Image
                   src={logo4}

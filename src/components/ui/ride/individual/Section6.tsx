@@ -59,11 +59,13 @@ const Section6: React.FC = () => {
                 height={200}
               />
               <div className="p-4">
-                <h3 className="text-lg font-bold text-gray-800">
-                  {event.title}
-                </h3>
-                <p className="text-sm text-gray-600">{event.time}</p>
-                <p className="text-sm text-gray-600">{event.location}</p>
+                <div className="lg:h-24">
+                  <h3 className="text-lg font-bold text-gray-800">
+                    {event.title}
+                  </h3>
+                  <p className="text-sm text-gray-600">{event.time}</p>
+                  <p className="text-sm text-gray-600">{event.location}</p>
+                </div>
                 <button className="mt-4 bg-customYellow text-white py-2 px-4 rounded hover:bg-yellow-600">
                   Book Now
                 </button>

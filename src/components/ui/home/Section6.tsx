@@ -1,18 +1,17 @@
 "use client";
 import Head from "next/head";
 import Image from "next/image";
-import mobileview from "@/../public/home/section6.png"; // Ensure the image is in the public folder
+import mobileview from "@/../public/home/section6.svg"; // Ensure the image is in the public folder
 
 import { useState } from "react";
 
 export default function Section6() {
   return (
     <div className="bg-slate ">
-      <main className="flex flex-col pt-10 py-10  ">
+      <main className="flex flex-col pt-20 py-10  ">
         <div className="flex items-center justify-center ">
-          <h1 className="text-2xl md:text-[48px] font-bold text-gray-900 text-center">
+          <h1 className="lg:text-4xl text-2xl 2xl:text-[40px] font-extrabold text-gray-900 text-center">
             As Comfortable As A Couch &<br />
-            <br />
             As Always, Safe & Sound
           </h1>
         </div>
@@ -36,7 +35,7 @@ export default function Section6() {
               <div className="bg-customYellow w-12 h-12 rounded-full flex items-center justify-center">
                 <h2 className="text-2xl font-bold text-white">1</h2>
               </div>
-              <h3 className="text-xl md:text-[36px] font-bold text-gray-900">
+              <h3 className="lg:text-xl 2xl:text-[32px] font-bold text-gray-900">
                 Where Would You Like To Go
               </h3>
             </div>
@@ -44,7 +43,7 @@ export default function Section6() {
               <div className="bg-customYellow w-12 h-12 rounded-full flex items-center justify-center">
                 <h2 className="text-2xl font-bold text-white">2</h2>
               </div>
-              <h3 className="text-xl md:text-[36px] font-bold text-gray-900">
+              <h3 className="lg:text-xl 2xl:text-[32px] font-bold text-gray-900">
                 Choose Your Ride, Time & Date
               </h3>
             </div>
@@ -52,7 +51,7 @@ export default function Section6() {
               <div className="bg-customYellow w-12 h-12 rounded-full flex items-center justify-center">
                 <h2 className="text-2xl font-bold text-white">3</h2>
               </div>
-              <h3 className="text-xl md:text-[36px] font-bold text-gray-900">
+              <h3 className="lg:text-xl 2xl:text-[32px] font-bold text-gray-900">
                 Book Your Ride.
               </h3>
             </div>

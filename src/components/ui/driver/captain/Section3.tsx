@@ -1,6 +1,6 @@
 // pages/index.tsx
 import Head from "next/head";
-import image from "@/../public/driver/captain/section3.png";
+import image from "@/../public/driver/captain/section3.svg";
 import Image from "next/image";
 
 const Section3 = () => {
@@ -25,7 +25,7 @@ const Section3 = () => {
             transportation experience to every passenger, ensuring every journey
             is as fun as the destination.
           </p>
-          <button className="bg-white hover:bg-orange-700 text-black font-bold py-2 px-4 rounded-xl">
+          <button className="bg-white hover:bg-customYellow text-black font-bold py-2 px-4 rounded-xl">
             Launching Soon
           </button>
         </div>

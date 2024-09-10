@@ -84,7 +84,7 @@ const ShowComponent = () => {
 
   return (
     <div className="p-4">
-      <div className="flex flex-row sm:space-x-4 lg:p-6 p-6 mb-4 justify-center items-center">
+      <div className="flex lg:lex-row sm:space-x-4 lg:p-6 p-6 mb-4 lg:justify-center">
         <button
           className={`flex flex-col items-center mb-4 sm:mb-0 w-[200px] ${
             activeComponent === 1 ? "text-yellow-500" : "text-gray-500"

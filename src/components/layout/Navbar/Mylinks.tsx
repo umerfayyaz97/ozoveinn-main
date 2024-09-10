@@ -16,7 +16,6 @@ export const links = [
     submenu: true,
     sublinks: [
       {
-        Head: "",
         sublink: [
           { name: "Captain", link: "/driver/captain" },
           { name: "Fleet Owner", link: "/driver/fleet-owner" },

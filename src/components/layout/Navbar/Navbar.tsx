@@ -29,7 +29,7 @@ const Navbar = () => {
             </button>
           </div>
         </div>
-        <ul className="md:flex hidden font-bold items-center justify-end  gap-4">
+        <ul className="md:flex hidden font-extrabold items-center justify-end  gap-4">
           <li>
             <Link href={"/"} className="py-7 px-3 inline-block">
               Home

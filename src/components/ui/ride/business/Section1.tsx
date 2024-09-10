@@ -1,6 +1,6 @@
 // pages/index.tsx
 import Head from "next/head";
-import image from "@/../public/ride/business/section1.png";
+import image from "@/../public/ride/business/section1.svg";
 import Image from "next/image";
 
 const Section1 = () => {
@@ -16,7 +16,7 @@ const Section1 = () => {
             <span className="text-customYellow"> simplified!</span>
           </h1>
           <p className="text-lg mb-8">The Smart Choice for Business Rides</p>
-          <button className="bg-white hover:bg-orange-700 text-black font-bold py-2 px-4 rounded-xl">
+          <button className="bg-white hover:bg-customYellow text-black font-bold py-2 px-4 rounded-xl">
             Register Now
           </button>
         </div>

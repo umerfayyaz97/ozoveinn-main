@@ -1,5 +1,5 @@
 import Head from "next/head";
-import p1 from "@/../public/driver/captain/section1/p1.jpeg";
+import p1 from "@/../public/driver/captain/section1.svg";
 import p2 from "@/../public/driver/captain/section1/p2.png";
 import Image from "next/image";
 
@@ -116,7 +116,7 @@ const Section1 = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <button
-                    className="bg-customYellow hover:bg-yellow-700 text-white font-bold py-2 px-4 w-full rounded focus:outline-none focus:shadow-outline"
+                    className="bg-customYellow hover:bg-yellow-700 text-white font-bold py-2 px-4 w-full rounded rounded-t-none focus:outline-none focus:shadow-outline"
                     type="button"
                   >
                     Get Started as a Driver
