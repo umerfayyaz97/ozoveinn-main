@@ -130,10 +130,10 @@ import {
   A11y,
   Autoplay,
 } from "swiper/modules";
-import i1 from "@/../public/home/section3/p1.svg";
-import i2 from "@/../public/home/section3/p2.svg";
-import i3 from "@/../public/home/section3/p3.svg";
-import i4 from "@/../public/home/section3/p4.svg";
+import i1 from "@/../public/home/section3/p1.png";
+import i2 from "@/../public/home/section3/p2.png";
+import i3 from "@/../public/home/section3/p3.png";
+import i4 from "@/../public/home/section3/p4.png";
 
 import "swiper/css";
 import "swiper/css/navigation";
