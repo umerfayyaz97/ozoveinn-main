@@ -28,7 +28,7 @@ const Section9 = () => {
               // height={20}
               // width={20}
               // className="lg:h-24 lg:w-24"
-              className="h-14 w-16 sm:h-20 sm:w-20 lg:h-24 lg:w-24"
+              className="h-20 w-24 sm:h-20 sm:w-20 lg:h-24 lg:w-24"
             />
           </div>
         </div>
