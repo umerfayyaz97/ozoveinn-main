@@ -1,5 +1,5 @@
 import Image from "next/image";
-import midImage from "@/../public/ride/individual/section2.svg";
+import midImage from "@/../public/ride/individual/section2.png";
 import logo1 from "@/../public/ride/individual/icons/section2/i1.png";
 import logo2 from "@/../public/ride/individual/icons/section2/i2.png";
 import logo3 from "@/../public/ride/individual/icons/section2/i3.png";

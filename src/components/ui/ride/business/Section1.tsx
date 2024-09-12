@@ -1,6 +1,6 @@
 // pages/index.tsx
 import Head from "next/head";
-import image from "@/../public/ride/business/section1.svg";
+import image from "@/../public/ride/business/section1.png";
 import Image from "next/image";
 
 const Section1 = () => {
