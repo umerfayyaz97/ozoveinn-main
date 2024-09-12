@@ -1,5 +1,5 @@
 import Image from "next/image";
-import taxiImage from "@/../public/home/section2.svg"; // make sure to add the image in the public folder and name it taxi.png
+import taxiImage from "@/../public/home/section2.png"; // make sure to add the image in the public folder and name it taxi.png
 
 import Link from "next/link";
 
