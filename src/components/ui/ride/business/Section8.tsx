@@ -25,7 +25,7 @@ const Section8 = () => {
             <Image
               src={qrcode}
               alt="QR Code"
-              className="h-14 w-16 sm:h-20 sm:w-20 lg:h-24 lg:w-24"
+              className="h-20 w-24 sm:h-20 sm:w-20 lg:h-24 lg:w-24"
             />
           </div>
         </div>

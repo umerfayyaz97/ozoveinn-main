@@ -7,7 +7,7 @@ import Page2 from "../home/helpers/section1/MapComp/Page2";
 import ReviewBooking from "../home/helpers/section1/MapComp/ReviewBooking";
 
 export default function Section1() {
-  const [component, setComponent] = useState(1);
+  const [component, setComponent] = useState(3);
   const state = useStore((state) => state);
 
   return (
