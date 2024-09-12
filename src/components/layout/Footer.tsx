@@ -66,15 +66,15 @@ const Footer = () => {
         <div className="lg:flex flex-wrap lg:gap-16 xl:gap-20 2xl:gap-28  lg:justify-between justify-start mt-5 md:mt-0">
           <div className="lg:mr-10 lg:py-0 py-2">
             <Link href="/">
-              <h5 className="font-bold mb-2">Home</h5>
+              <h5 className="font-bold mb-2 text-customYellow">Home</h5>
             </Link>
           </div>
           <div className="lg:mr-10 lg:py-0 py-2">
-            <h5 className="font-bold mb-2">Ride</h5>
+            <h5 className="font-bold mb-2 text-customYellow">Ride</h5>
             <ul>
               <li>
                 <Link href="/ride/individual">
-                  <span className="cursor-pointer">Individual</span>
+                  <span className="cursor-pointer ">Individual</span>
                 </Link>
               </li>
               <li>
@@ -85,11 +85,11 @@ const Footer = () => {
             </ul>
           </div>
           <div className="lg:mr-10 lg:py-0 py-2">
-            <h5 className="font-bold mb-2">Drive With Us</h5>
+            <h5 className="font-bold mb-2 text-customYellow">Drive With Us</h5>
             <ul>
               <li>
                 <Link href="/driver/captain">
-                  <span className="cursor-pointer">Captain/Driver</span>
+                  <span className="cursor-pointer">Apply to Drive</span>
                 </Link>
               </li>
               <li>
@@ -100,7 +100,7 @@ const Footer = () => {
             </ul>
           </div>
           <div className="lg:mr-10 lg:py-0 py-2">
-            <h5 className="font-bold mb-2">Company</h5>
+            <h5 className="font-bold mb-2 text-customYellow">Company</h5>
             <ul>
               <li>
                 <Link href="/contact" passHref>
@@ -110,7 +110,7 @@ const Footer = () => {
             </ul>
           </div>
           <div className="lg:mr-10 lg:py-0 py-2">
-            <h5 className="font-bold mb-2">Legal</h5>
+            <h5 className="font-bold mb-2 text-customYellow">Legal</h5>
             <ul>
               <li>
                 <Link href="/contact" passHref>
@@ -131,7 +131,7 @@ const Footer = () => {
           </div>
 
           <div className="lg:items-center  lg:py-0 py-2 ">
-            <h5 className="font-bold">Ride With Us</h5>
+            <h5 className="font-bold text-customYellow">Ride With Us</h5>
             <p className="pb-2">Download the app</p>
             <div>
               <Link href="#" passHref>

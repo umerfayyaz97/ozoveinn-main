@@ -1,5 +1,5 @@
 import Image from "next/image";
-import driverImage from "@/../public/home/section8.svg"; // Ensure the image is in the public folder
+import driverImage from "@/../public/home/section8.png"; // Ensure the image is in the public folder
 import React from "react";
 
 export default function Section8() {
