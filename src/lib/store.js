@@ -223,7 +223,7 @@ const useStore = create(
     distanceStopToEnd: 0,
     additionalOptions: [],
     totalPrice: 0,
-    hourlyBookingCount: 1,
+    hourlyBookingCount: 3,
     additionalVehicleCount: 1,
     splitPaymentDetails: { passengers: 0 }, // New state for split payment details
     passengers: 0, // Number of passengers state

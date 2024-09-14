@@ -314,7 +314,7 @@ const Page1 = ({ setComponent }) => {
 
                 <button
                   onClick={handleNextClick}
-                  className="w-full bg-yellow-500 text-black p-2 font-bold"
+                  className="w-full bg-yellow-500 text-black rounded-md p-2 font-bold"
                 >
                   Next
                 </button>
@@ -564,17 +564,19 @@ const Page1 = ({ setComponent }) => {
                           >
                             <Minus />
                           </button>
-                          <input
-                            type="number"
-                            value={selectedPassengers}
-                            onChange={(e) => {
-                              e.stopPropagation(); // Prevent closing the box
-                              setSelectedPassengers(
-                                Math.max(1, parseInt(e.target.value) || 1)
-                              );
-                            }}
-                            className="w-20 p-2 text-center rounded"
-                          />
+                          <div className="border-2 border-yellow-500  rounded-md">
+                            <input
+                              type="number"
+                              value={selectedPassengers}
+                              onChange={(e) => {
+                                e.stopPropagation(); // Prevent closing the box
+                                setSelectedPassengers(
+                                  Math.max(1, parseInt(e.target.value) || 1)
+                                );
+                              }}
+                              className="w-20 p-2 text-center rounded-md focus:outline-none"
+                            />
+                          </div>
                           <button
                             onClick={(e) => {
                               e.stopPropagation(); // Prevent box from closing
@@ -735,20 +737,22 @@ const Page1 = ({ setComponent }) => {
                                       >
                                         <Minus />
                                       </button>
-                                      <input
-                                        type="number"
-                                        value={hourlyBookingCount}
-                                        min={3}
-                                        onChange={(e) =>
-                                          setHourlyBookingCount(
-                                            Math.max(
-                                              3,
-                                              parseInt(e.target.value) || 3
+                                      <div className=" border-yellow-500 border-2 rounded-md">
+                                        <input
+                                          type="number"
+                                          value={hourlyBookingCount}
+                                          min={3} // Set the minimum value to 3
+                                          onChange={(e) =>
+                                            setHourlyBookingCount(
+                                              Math.max(
+                                                3,
+                                                parseInt(e.target.value) || 3
+                                              ) // Ensure the value doesn't go below 3
                                             )
-                                          )
-                                        }
-                                        className="w-20 p-2 text-center rounded"
-                                      />
+                                          }
+                                          className="w-20 p-2 text-center rounded-md focus:outline-none"
+                                        />
+                                      </div>
                                       <button
                                         onClick={(e) => {
                                           e.stopPropagation();
@@ -806,24 +810,26 @@ const Page1 = ({ setComponent }) => {
                                         <Minus />
                                       </button>
                                       {/* Input Field */}
-                                      <input
-                                        type="number"
-                                        value={additionalVehicleCount}
-                                        min={1}
-                                        max={3} // Set maximum value to 3
-                                        onChange={(e) =>
-                                          setAdditionalVehicleCount(
-                                            Math.max(
-                                              1,
-                                              Math.min(
-                                                3,
-                                                parseInt(e.target.value) || 1
+                                      <div className="border-2 border-yellow-500 rounded-md">
+                                        <input
+                                          type="number"
+                                          value={additionalVehicleCount}
+                                          min={1}
+                                          max={3} // Set maximum value to 3
+                                          onChange={(e) =>
+                                            setAdditionalVehicleCount(
+                                              Math.max(
+                                                1,
+                                                Math.min(
+                                                  3,
+                                                  parseInt(e.target.value) || 1
+                                                )
                                               )
                                             )
-                                          )
-                                        }
-                                        className="w-20 p-2 text-center rounded"
-                                      />
+                                          }
+                                          className="w-20 p-2 text-center rounded-md focus:outline-none"
+                                        />
+                                      </div>
                                       {/* Increment Button */}
                                       <button
                                         onClick={(e) => {
@@ -1173,17 +1179,21 @@ const Page1 = ({ setComponent }) => {
                       >
                         <Minus />
                       </button>
-                      <input
-                        type="number"
-                        value={selectedPassengers}
-                        onChange={(e) => {
-                          e.stopPropagation(); // Prevent closing the box
-                          setSelectedPassengers(
-                            Math.max(1, parseInt(e.target.value) || 1)
-                          );
-                        }}
-                        className="w-20 p-2 text-center rounded"
-                      />
+                      {/* Input field with yellow border */}
+                      <div className="border-2 border-yellow-500  rounded-md">
+                        <input
+                          type="number"
+                          value={selectedPassengers}
+                          onChange={(e) => {
+                            e.stopPropagation(); // Prevent closing the box
+                            setSelectedPassengers(
+                              Math.max(1, parseInt(e.target.value) || 1)
+                            );
+                          }}
+                          className="w-20 p-2 text-center rounded-md focus:outline-none"
+                        />
+                      </div>
+
                       <button
                         onClick={(e) => {
                           e.stopPropagation(); // Prevent box from closing
@@ -1334,22 +1344,22 @@ const Page1 = ({ setComponent }) => {
                                   >
                                     <Minus />
                                   </button>
-
-                                  <input
-                                    type="number"
-                                    value={hourlyBookingCount}
-                                    min={3} // Set the minimum value to 3
-                                    onChange={(e) =>
-                                      setHourlyBookingCount(
-                                        Math.max(
-                                          3,
-                                          parseInt(e.target.value) || 3
-                                        ) // Ensure the value doesn't go below 3
-                                      )
-                                    }
-                                    className="w-20 p-2 text-center rounded"
-                                  />
-
+                                  <div className="border-2 border-yellow-500 rounded-md">
+                                    <input
+                                      type="number"
+                                      value={hourlyBookingCount}
+                                      min={3} // Set the minimum value to 3
+                                      onChange={(e) =>
+                                        setHourlyBookingCount(
+                                          Math.max(
+                                            3,
+                                            parseInt(e.target.value) || 3
+                                          ) // Ensure the value doesn't go below 3
+                                        )
+                                      }
+                                      className="w-20 p-2 text-center rounded-md focus:outline-none"
+                                    />
+                                  </div>
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation();
@@ -1406,24 +1416,26 @@ const Page1 = ({ setComponent }) => {
                                     <Minus />
                                   </button>
                                   {/* Input Field */}
-                                  <input
-                                    type="number"
-                                    value={additionalVehicleCount}
-                                    min={1}
-                                    max={3} // Set maximum value to 3
-                                    onChange={(e) =>
-                                      setAdditionalVehicleCount(
-                                        Math.max(
-                                          1,
-                                          Math.min(
-                                            3,
-                                            parseInt(e.target.value) || 1
+                                  <div className="border-2 border-yellow-500 rounded-md">
+                                    <input
+                                      type="number"
+                                      value={additionalVehicleCount}
+                                      min={1}
+                                      max={3} // Set maximum value to 3
+                                      onChange={(e) =>
+                                        setAdditionalVehicleCount(
+                                          Math.max(
+                                            1,
+                                            Math.min(
+                                              3,
+                                              parseInt(e.target.value) || 1
+                                            )
                                           )
                                         )
-                                      )
-                                    }
-                                    className="w-20 p-2 text-center rounded"
-                                  />
+                                      }
+                                      className="w-20 p-2 text-center rounded-md focus:outline-none"
+                                    />
+                                  </div>
                                   {/* Increment Button */}
                                   <button
                                     onClick={(e) => {
@@ -1491,7 +1503,7 @@ const Page1 = ({ setComponent }) => {
 
           <button
             onClick={handleNextComponent}
-            className="w-full bg-yellow-500 text-black p-2 font-bold"
+            className="w-full bg-yellow-500 text-black p-2 rounded-md font-bold"
           >
             Next
           </button>
