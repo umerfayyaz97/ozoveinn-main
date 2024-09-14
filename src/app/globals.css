@@ -81,3 +81,24 @@ body {
 .mapboxgl-ctrl-attrib-inner {
   display: none !important;
 }
+
+/* Hide the native date and time picker icons globally */
+
+/* For WebKit browsers (Chrome, Safari, Edge) */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  display: none;
+  opacity: 0;
+}
+
+/* For Mozilla Firefox */
+input[type="date"],
+input[type="time"] {
+  -moz-appearance: textfield;
+}
+
+/* For Internet Explorer and Edge Legacy */
+input[type="date"]::-ms-expand,
+input[type="time"]::-ms-expand {
+  display: none;
+}

@@ -3,6 +3,7 @@
 // import useStore from "@/lib/store";
 // import Image from "next/image";
 // import { ArrowLeftIcon, Phone, Mail, MapPin } from "lucide-react";
+// import { v4 as uuidv4 } from "uuid";
 
 // const ReviewBooking = ({ setComponent }) => {
 //   const {
@@ -10,7 +11,6 @@
 //     pickup,
 //     stop,
 //     destination,
-//     vehicleType,
 //     vehicleDetails,
 //     occasion,
 //     passengers,
@@ -24,12 +24,13 @@
 //     options,
 //     totalPrice,
 //     calculateTotalPrice,
+//     orderNumber,
+//     setOrderNumber,
 //   } = useStore((state) => ({
 //     date: state.date,
 //     pickup: state.pickup,
 //     stop: state.stop,
 //     destination: state.destination,
-//     vehicleType: state.vehicleType,
 //     vehicleDetails: state.vehicleDetails,
 //     occasion: state.occasion,
 //     passengers: state.passengers,
@@ -43,10 +44,29 @@
 //     options: state.options,
 //     totalPrice: state.totalPrice,
 //     calculateTotalPrice: state.calculateTotalPrice,
+//     orderNumber: state.orderNumber,
+//     setOrderNumber: state.setOrderNumber,
 //   }));
 
 //   useEffect(() => {
 //     calculateTotalPrice();
+
+//     if (!orderNumber) {
+//       // Generate the order number
+//       const generateOrderNumber = () => {
+//         const uuid = uuidv4();
+//         const chars = uuid
+//           .replace(/[^a-zA-Z0-9]/g, "")
+//           .slice(0, 4)
+//           .toUpperCase();
+//         const orderNum = `${chars[0]}${chars[1]}${chars[2]}${chars[3]}`;
+//         return orderNum;
+//       };
+
+//       const orderNum = generateOrderNumber();
+//       setOrderNumber(orderNum);
+//       console.log("Order Number set to:", orderNum); // Console log to monitor
+//     }
 //   }, [
 //     vehicleDetails,
 //     distanceStartToEnd,
@@ -56,6 +76,8 @@
 //     hourlyBookingCount,
 //     additionalVehicleCount,
 //     calculateTotalPrice,
+//     orderNumber,
+//     setOrderNumber,
 //   ]);
 
 //   const [showCancellationDetails, setShowCancellationDetails] = useState(false);
@@ -63,8 +85,6 @@
 //   const toggleCancellationDetails = () => {
 //     setShowCancellationDetails(!showCancellationDetails);
 //   };
-
-//   const orderNumber = "123456";
 
 //   const additionalOptionsTotal = additionalOptions.reduce((acc, option) => {
 //     if (option === "Hourly Bookings") {
@@ -80,7 +100,7 @@
 
 //   return (
 //     <div className="lg:p-0 p-3">
-//       <div className="w-full p-4 lg:overflow-auto lg:h-[440px] text-black bg-white shadow-lg rounded-lg border border-gray-300 lg:border-none">
+//       <div className="w-full p-4 lg:overflow-auto lg:h-[345px] text-black bg-white shadow-lg rounded-lg border border-gray-300 lg:border-none">
 //         <button onClick={() => setComponent(2)} className="mb-4 text-gray-700">
 //           <ArrowLeftIcon className="w-6 h-6" />
 //         </button>
@@ -89,7 +109,8 @@
 //         </h1>
 //         <div className="mb-2">
 //           <span className="font-semibold text-gray-700">Date:</span> {date}
-//           <p className="text-sm">Order #: {orderNumber}</p>
+//           <p className="text-sm">Order #: {orderNumber}</p>{" "}
+//           {/* Correct display of order number */}
 //         </div>
 //         <div className="flex items-center mb-4">
 //           <MapPin className="mr-4" />
@@ -267,6 +288,7 @@ const ReviewBooking = ({ setComponent }) => {
     calculateTotalPrice,
     orderNumber,
     setOrderNumber,
+    splitPaymentDetails, // Fetch split payment details from Zustand
   } = useStore((state) => ({
     date: state.date,
     pickup: state.pickup,
@@ -287,6 +309,7 @@ const ReviewBooking = ({ setComponent }) => {
     calculateTotalPrice: state.calculateTotalPrice,
     orderNumber: state.orderNumber,
     setOrderNumber: state.setOrderNumber,
+    splitPaymentDetails: state.splitPaymentDetails, // Fetch the split payment details
   }));
 
   useEffect(() => {
@@ -339,9 +362,15 @@ const ReviewBooking = ({ setComponent }) => {
     }
   }, 0);
 
+  // Calculate price per person if split payment was selected
+  const pricePerPerson =
+    splitPaymentDetails.passengers && splitPaymentDetails.passengers > 0
+      ? (totalPrice / splitPaymentDetails.passengers).toFixed(2)
+      : null;
+
   return (
     <div className="lg:p-0 p-3">
-      <div className="w-full p-4 lg:overflow-auto lg:h-[345px] text-black bg-white shadow-lg rounded-lg border border-gray-300 lg:border-none">
+      <div className="w-full p-4 lg:overflow-auto lg:h-[460px] text-black bg-white shadow-lg rounded-lg border border-gray-300 lg:border-none">
         <button onClick={() => setComponent(2)} className="mb-4 text-gray-700">
           <ArrowLeftIcon className="w-6 h-6" />
         </button>
@@ -350,8 +379,7 @@ const ReviewBooking = ({ setComponent }) => {
         </h1>
         <div className="mb-2">
           <span className="font-semibold text-gray-700">Date:</span> {date}
-          <p className="text-sm">Order #: {orderNumber}</p>{" "}
-          {/* Correct display of order number */}
+          <p className="text-sm">Order #: {orderNumber}</p>
         </div>
         <div className="flex items-center mb-4">
           <MapPin className="mr-4" />
@@ -458,10 +486,22 @@ const ReviewBooking = ({ setComponent }) => {
               <p className="text-xs">Additional Options</p>
               <p className="text-xs">${additionalOptionsTotal.toFixed(2)}</p>
             </div>
+            {/* Conditional Price Per Person */}
+            {pricePerPerson && (
+              <div className="flex justify-between">
+                <p className="text-sm font-semibold text-yellow-600">
+                  Price Per Person
+                </p>
+                <p className="text-sm font-semibold text-yellow-600">
+                  ${pricePerPerson}
+                </p>
+              </div>
+            )}
             <div className="flex justify-between">
               <p className="text-sm font-semibold text-yellow-600">
                 Total Amount
               </p>
+
               <p className="text-sm font-semibold text-yellow-600">
                 ${totalPrice.toFixed(2)}
               </p>

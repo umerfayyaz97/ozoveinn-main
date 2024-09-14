@@ -3,7 +3,6 @@ import axios from "axios";
 import { MapPin } from "lucide-react";
 
 const SearchBox = ({ label = "", onSelect }) => {
-  // Default value for label
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
@@ -18,6 +17,7 @@ const SearchBox = ({ label = "", onSelect }) => {
             country: "AU",
             autocomplete: true,
             limit: 5,
+            bbox: "115.6176,-32.6757,116.2394,-31.6241", // Bounding box for Perth
           },
         }
       );
@@ -50,14 +50,14 @@ const SearchBox = ({ label = "", onSelect }) => {
 
   return (
     <div className="relative text-black bg-white">
-      <div className=" peer-focus-within:border-yellow-500 focus:border-yellow-500  w-full h-10 px-4 gap-2 flex items-center mb-3 border border-gray-300 rounded-md">
+      <div className="peer-focus-within:border-yellow-500 focus:border-yellow-500 w-full h-10 px-4 gap-2 flex items-center mb-3 border border-gray-300 rounded-md">
         <MapPin />
         <input
           type="text"
           value={query}
           onChange={handleChange}
           className="focus:outline-none"
-          placeholder={label || "Enter a location"} // Use label if provided
+          placeholder={label || "Enter a location"}
         />
       </div>
       {suggestions.length > 0 && (

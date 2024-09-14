@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Image from "next/image";
 import useStore from "@/lib/store";
@@ -12,6 +12,9 @@ import {
   MapPin,
   Minus,
   Plus,
+  Calendar,
+  Clock,
+  // ChevronDown,
 } from "lucide-react";
 
 const Page1 = ({ setComponent }) => {
@@ -27,6 +30,7 @@ const Page1 = ({ setComponent }) => {
     totalPrice,
     hourlyBookingCount,
     additionalVehicleCount,
+    splitPaymentDetails,
     setPickup,
     setDestination,
     setStop,
@@ -38,6 +42,8 @@ const Page1 = ({ setComponent }) => {
     setAdditionalOptions,
     setHourlyBookingCount,
     setAdditionalVehicleCount,
+    setSplitPaymentDetails,
+    setPassengers, // Set the number of passengers in Zustand
     calculateTotalPrice,
   } = useStore();
 
@@ -46,20 +52,22 @@ const Page1 = ({ setComponent }) => {
   const [error, setError] = useState("");
   const [isDateSelected, setIsDateSelected] = useState(false);
   const [isTimeSelected, setIsTimeSelected] = useState(false);
+  const [confirmedOptions, setConfirmedOptions] = useState([]);
+  const [splitPaymentOpen, setSplitPaymentOpen] = useState(false);
+  const [splitPayment, setSplitPayment] = useState(false); // Added splitPayment state
+  const [selectedPassengers, setSelectedPassengers] = useState(
+    splitPaymentDetails.passengers || 1
+  ); // Initial state from Zustand
 
   const options = [
     { name: "Hourly Bookings" },
-    { name: "Add More Vehicles", price: "$15" },
-    { name: "Return Trip", price: "$20" },
-    { name: "Party Van", price: "$25" },
-    { name: "Luggage Trailer", price: "$30" },
-    { name: "Child Seat", price: "$35" },
-    { name: "Disability Seat Driver", price: "$35" },
+    { name: "Add More Vehicles", price: 15 },
+    { name: "Luggage Trailer", price: 30 },
   ];
 
   const vehicles = {
     smallVan: {
-      name: "Small Van",
+      name: "Bus",
       image: "/vehicles/Vito1.png",
       passengerLimit: "8 Seater",
       averageCostPerPerson: "$15",
@@ -69,7 +77,7 @@ const Page1 = ({ setComponent }) => {
       hourlyRate: 60,
     },
     largeVan: {
-      name: "Large Van",
+      name: "Mini Bus",
       image: "/vehicles/2.png",
       passengerLimit: "10 Seater",
       averageCostPerPerson: "$20",
@@ -88,6 +96,19 @@ const Page1 = ({ setComponent }) => {
       baseFare: 150,
       hourlyRate: 150,
     },
+  };
+
+  const handleConfirm = (optionName) => {
+    setConfirmedOptions([...confirmedOptions, optionName]);
+  };
+
+  const handleToggle = (option) => {
+    if (additionalOptions.includes(option.name)) {
+      setConfirmedOptions(
+        confirmedOptions.filter((name) => name !== option.name)
+      );
+    }
+    handleOptionChange(option);
   };
 
   const handleDateChange = (e) => {
@@ -126,6 +147,16 @@ const Page1 = ({ setComponent }) => {
   const toggleOptions = () => {
     setShowAllOptions(!showAllOptions);
   };
+
+  const handleSplitPaymentConfirm = () => {
+    setSplitPaymentDetails({ passengers: selectedPassengers });
+    setPassengers(selectedPassengers); // Set passengers globally via Zustand
+    handleConfirm("Split Payment");
+    setSplitPaymentOpen(false);
+  };
+
+  const dateInputRef = useRef(null);
+  const timeInputRef = useRef(null);
 
   useEffect(() => {
     const calculateRoute = async () => {
@@ -213,7 +244,6 @@ const Page1 = ({ setComponent }) => {
       setComponent(2);
     }
   };
-
   return (
     <div>
       <div className="relative flex flex-col lg:flex-row lg:h-full lg:p-0 p-3">
@@ -283,10 +313,10 @@ const Page1 = ({ setComponent }) => {
                 </button> */}
 
                 <button
-                  // onClick={handleNextClick}
+                  onClick={handleNextClick}
                   className="w-full bg-yellow-500 text-black p-2 font-bold"
                 >
-                  {/* Next */} Launching Soon
+                  Next
                 </button>
               </>
             )}
@@ -317,50 +347,81 @@ const Page1 = ({ setComponent }) => {
                   </>
                 )}
 
-                <div className="mb-4">
+                {/* <div className="mb-4">
                   <p className="text-sm text-gray-700">
                     {formattedDate || "No date selected"}
                   </p>
                   <p className="text-sm text-gray-700">{time}</p>
-                </div>
+                </div> */}
                 <p className="text-2xl font-bold text-gray-700 mb-4">
                   Select Date & Time
                 </p>
-                <p className="mb-2 text-xs text-gray-700">
-                  Trip must be selected two days in advance
-                </p>
+
                 <div className="mb-4 space-y-2">
                   <div className="relative">
-                    <input
-                      type="date"
-                      className={`w-full p-2 text-black border border-gray-300 rounded ${
-                        isDateSelected ? "" : "text-transparent"
-                      }`}
-                      value={isDateSelected ? date : ""}
-                      onChange={handleDateChange}
-                      onFocus={() => setIsDateSelected(true)}
-                    />
-                    {!isDateSelected && (
-                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-700 font-bold">
-                        Today
+                    {/* Date Input */}
+                    <div className="relative w-full">
+                      {/* Left Icon */}
+                      <span
+                        className="absolute inset-y-0 left-0 flex items-center pl-3 cursor-pointer"
+                        onClick={() => dateInputRef.current.showPicker()}
+                      >
+                        <Calendar className="text-black" />
                       </span>
-                    )}
+                      {/* Input */}
+                      <input
+                        ref={dateInputRef}
+                        type="date"
+                        className={`w-full pl-10 py-2 text-gray-700 border border-gray-300 rounded appearance-none ${
+                          isDateSelected ? "" : "text-transparent"
+                        }`}
+                        value={isDateSelected ? date : ""}
+                        onChange={handleDateChange}
+                        onClick={() => dateInputRef.current.showPicker()}
+                        onFocus={() => setIsDateSelected(true)}
+                      />
+                      {/* Placeholder */}
+                      {!isDateSelected && (
+                        <span className="absolute left-10 ml-4 top-1/2 transform -translate-y-1/2 text-gray-700 font-bold pointer-events-none">
+                          Select Date
+                        </span>
+                      )}
+                      {/* Right Icon */}
+                      {/* <span className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <ChevronDown className="text-black " />
+                  </span> */}
+                    </div>
                   </div>
                   <div className="relative">
+                    {/* Left Icon */}
+                    <span
+                      className="absolute inset-y-0 left-0 flex items-center pl-3 cursor-pointer"
+                      onClick={() => timeInputRef.current.showPicker()}
+                    >
+                      <Clock className="text-black" />
+                    </span>
+                    {/* Input */}
                     <input
+                      ref={timeInputRef}
                       type="time"
-                      className={`w-full p-2 text-black border border-gray-300 rounded ${
+                      className={`w-full pl-10 py-2 text-gray-700 border border-gray-300 rounded appearance-none ${
                         isTimeSelected ? "" : "text-transparent"
                       }`}
                       value={isTimeSelected ? time : ""}
                       onChange={handleTimeChange}
+                      onClick={() => timeInputRef.current.showPicker()}
                       onFocus={() => setIsTimeSelected(true)}
                     />
+                    {/* Placeholder */}
                     {!isTimeSelected && (
-                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-700 font-bold">
-                        Now
+                      <span className="absolute left-10 top-1/2 ml-4 transform -translate-y-1/2 text-gray-700 font-bold pointer-events-none">
+                        Select Time
                       </span>
                     )}
+                    {/* Right Icon */}
+                    {/* <span className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <ChevronDown className="text-black" />
+                  </span> */}
                   </div>
                 </div>
 
@@ -442,128 +503,367 @@ const Page1 = ({ setComponent }) => {
                   </div>
                 )}
 
-                <div className="mb-4">
+                <div className="mt-4 mb-4">
                   <p className="text-2xl font-bold text-gray-700">
                     Additional Services
                   </p>
-                  <div className="p-2 mt-4 bg-gray-100 border border-gray-500 rounded-md">
+
+                  {/* Split Payment Option (always on top) */}
+                  <div
+                    className={`p-2 mb-2 mt-4 border rounded-md shadow-sm transition-colors cursor-pointer ${
+                      splitPayment
+                        ? "border-yellow-500 bg-yellow-500/20"
+                        : "border-gray-300 bg-gray-100"
+                    }`}
+                    onClick={(e) => {
+                      if (e.target.tagName !== "BUTTON") {
+                        setSplitPaymentOpen(!splitPaymentOpen);
+                      }
+                    }}
+                  >
+                    <div className="flex items-center justify-between p-2">
+                      <span className="text-sm text-black">Split Payment</span>
+
+                      {/* Toggle Button */}
+                      <button
+                        className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none ${
+                          splitPayment ? "bg-yellow-500" : "bg-gray-300"
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent box click from triggering
+                          setSplitPayment(!splitPayment); // Toggle split payment option
+                          if (!splitPayment) {
+                            setSplitPaymentOpen(true); // Open the box if toggling on
+                          } else {
+                            setSplitPaymentOpen(false); // Close the box if toggling off
+                          }
+                        }}
+                      >
+                        <span
+                          className={`${
+                            splitPayment ? "translate-x-6" : "translate-x-1"
+                          } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+                        />
+                      </button>
+                    </div>
+
+                    {/* Conditional content for when the box is open */}
+                    {splitPaymentOpen && (
+                      <div className="flex flex-col items-center mb-4">
+                        <p className="text-sm">Select Passengers</p>
+                        <div className="flex items-center mb-2 space-x-4">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent box from closing
+                              handleDecrement(
+                                selectedPassengers,
+                                setSelectedPassengers
+                              );
+                            }}
+                            className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-white rounded-full"
+                          >
+                            <Minus />
+                          </button>
+                          <input
+                            type="number"
+                            value={selectedPassengers}
+                            onChange={(e) => {
+                              e.stopPropagation(); // Prevent closing the box
+                              setSelectedPassengers(
+                                Math.max(1, parseInt(e.target.value) || 1)
+                              );
+                            }}
+                            className="w-20 p-2 text-center rounded"
+                          />
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent box from closing
+                              handleIncrement(
+                                selectedPassengers,
+                                setSelectedPassengers
+                              );
+                            }}
+                            className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-yellow-500 rounded-full"
+                          >
+                            <Plus />
+                          </button>
+                        </div>
+
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent box from closing
+                            handleSplitPaymentConfirm(); // Save and confirm split payment
+                          }}
+                          className="mt-2 px-4 py-2 bg-yellow-500 text-black rounded-md w-full"
+                        >
+                          Confirm
+                        </button>
+                        <p className="text-xs mt-2 text-gray-500">
+                          A fee of 5$ will be charged upfront.
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Text when the box is closed but the option is not confirmed */}
+                    {!splitPaymentOpen && !splitPayment && (
+                      <p className="text-[10px] ml-2 -mt-2 text-gray-500">
+                        (Split among friends)
+                      </p>
+                    )}
+
+                    {/* Show confirmed message with number of passengers when the option is confirmed */}
+                    {splitPayment && !splitPaymentOpen && (
+                      <p className="text-[10px] ml-2 -mt-2 text-gray-500">
+                        ({selectedPassengers}{" "}
+                        {selectedPassengers === 1 ? "passenger" : "passengers"}{" "}
+                        Selected)
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Additional Options (below Split Payment) */}
+                  <div className=" ">
                     {options
-                      .slice(0, showAllOptions ? options.length : 3)
-                      .map((option, index) => (
-                        <div key={option.name}>
+                      .filter((option) => option.name !== "Split Payment")
+                      .slice(0, showAllOptions ? options.length : 2)
+                      .map((option) => (
+                        <div
+                          key={option.name}
+                          className={`p-2 mb-2 border rounded-md shadow-sm transition-colors cursor-pointer ${
+                            additionalOptions.includes(option.name)
+                              ? "border-yellow-500 bg-yellow-500/20"
+                              : "border-gray-300 bg-gray-100"
+                          }`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // Handle option selection and allow editing after confirmation
+                            if (option.name === "Hourly Bookings") {
+                              // If confirmed, reset confirmation
+                              if (
+                                confirmedOptions.includes("Hourly Bookings")
+                              ) {
+                                setConfirmedOptions(
+                                  confirmedOptions.filter(
+                                    (name) => name !== "Hourly Bookings"
+                                  )
+                                );
+                              }
+                              handleOptionChange(option);
+                            } else if (option.name === "Add More Vehicles") {
+                              if (
+                                confirmedOptions.includes("Add More Vehicles")
+                              ) {
+                                setConfirmedOptions(
+                                  confirmedOptions.filter(
+                                    (name) => name !== "Add More Vehicles"
+                                  )
+                                );
+                              }
+                              handleOptionChange(option);
+                            } else {
+                              handleOptionChange(option);
+                            }
+                          }}
+                        >
                           <div className="flex items-center justify-between p-2">
-                            <label className="flex items-center space-x-2">
-                              <input
-                                type="checkbox"
-                                checked={additionalOptions.includes(
-                                  option.name
-                                )}
-                                onChange={() => handleOptionChange(option)}
-                                className="w-4 h-4 text-yellow-200 border-gray-300 rounded-full"
-                              />
-                              <span className="text-sm text-black">
-                                {option.name}
-                              </span>
-                            </label>
-                            <span className="text-sm text-gray-600">
-                              {option.name === "Hourly Bookings"
-                                ? `$${vehicleDetails.hourlyRate || 0}`
-                                : option.price}
+                            <span className="text-sm text-black">
+                              {option.name}
+                            </span>
+
+                            {/* Display Price */}
+
+                            <span className="text-sm text-black font-bold">
+                              {option.name === "Hourly Bookings" &&
+                              vehicleDetails
+                                ? confirmedOptions.includes("Hourly Bookings")
+                                  ? `$${(
+                                      hourlyBookingCount *
+                                      (vehicleDetails.hourlyRate || 0)
+                                    ).toFixed(2)}`
+                                  : `$${vehicleDetails.hourlyRate || 0}.00`
+                                : option.name === "Add More Vehicles"
+                                ? confirmedOptions.includes("Add More Vehicles")
+                                  ? `$${(
+                                      additionalVehicleCount *
+                                      (option.price || 0)
+                                    ).toFixed(2)}`
+                                  : `$${option.price || 0}.00`
+                                : option.price
+                                ? `$${option.price.toFixed(2)}`
+                                : "10.00$"}
                             </span>
                           </div>
+
+                          {/* Subheading for Hourly Bookings */}
+                          {option.name === "Hourly Bookings" &&
+                            !additionalOptions.includes("Hourly Bookings") && (
+                              <p className="text-[10px] ml-2 -mt-2 text-gray-500">
+                                Minimum 3 hours
+                              </p>
+                            )}
+
+                          {/* Subheading for Add More Vehicles */}
+                          {option.name === "Add More Vehicles" &&
+                            !additionalOptions.includes(
+                              "Add More Vehicles"
+                            ) && (
+                              <p className="text-[10px] ml-2 -mt-2 text-gray-500">
+                                Book Upto 3 Vehicles
+                              </p>
+                            )}
+
+                          {/* Conditional Render for Hourly Bookings */}
                           {option.name === "Hourly Bookings" &&
                             additionalOptions.includes("Hourly Bookings") && (
                               <div className="flex flex-col items-center mb-4">
-                                <p className="text-sm">Book for</p>
-                                <div className="flex items-center mb-2 space-x-4">
-                                  <button
-                                    onClick={() =>
-                                      handleDecrement(
-                                        hourlyBookingCount,
-                                        setHourlyBookingCount
-                                      )
-                                    }
-                                    className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-white rounded-full"
-                                  >
-                                    <Minus />
-                                  </button>
-                                  <input
-                                    type="number"
-                                    value={hourlyBookingCount}
-                                    onChange={(e) =>
-                                      setHourlyBookingCount(
-                                        Math.max(
-                                          1,
-                                          parseInt(e.target.value) || 1
-                                        )
-                                      )
-                                    }
-                                    className="w-20 p-2 text-center rounded"
-                                  />
-                                  <button
-                                    onClick={() =>
-                                      handleIncrement(
-                                        hourlyBookingCount,
-                                        setHourlyBookingCount
-                                      )
-                                    }
-                                    className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-yellow-500 rounded-full"
-                                  >
-                                    <Plus />
-                                  </button>
-                                </div>
-                                <p className="text-sm">Hours</p>
+                                {!confirmedOptions.includes(
+                                  "Hourly Bookings"
+                                ) ? (
+                                  <>
+                                    <p className="text-sm">Book for</p>
+                                    <div className="flex items-center mb-2 space-x-4">
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleDecrement(
+                                            hourlyBookingCount,
+                                            setHourlyBookingCount
+                                          );
+                                        }}
+                                        disabled={hourlyBookingCount <= 3}
+                                        className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-white rounded-full"
+                                      >
+                                        <Minus />
+                                      </button>
+                                      <input
+                                        type="number"
+                                        value={hourlyBookingCount}
+                                        min={3}
+                                        onChange={(e) =>
+                                          setHourlyBookingCount(
+                                            Math.max(
+                                              3,
+                                              parseInt(e.target.value) || 3
+                                            )
+                                          )
+                                        }
+                                        className="w-20 p-2 text-center rounded"
+                                      />
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleIncrement(
+                                            hourlyBookingCount,
+                                            setHourlyBookingCount
+                                          );
+                                        }}
+                                        className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-yellow-500 rounded-full"
+                                      >
+                                        <Plus />
+                                      </button>
+                                    </div>
+                                    <p className="text-sm">Hours</p>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleConfirm("Hourly Bookings");
+                                      }}
+                                      className="mt-2 px-4 py-2 bg-yellow-500 text-black rounded-md w-full"
+                                    >
+                                      Confirm
+                                    </button>
+                                  </>
+                                ) : (
+                                  <p className="text-[10px] -ml-56 -mt-2 text-gray-500">
+                                    Booked for {hourlyBookingCount} hours!
+                                  </p>
+                                )}
                               </div>
                             )}
+
+                          {/* Conditional Render for Add More Vehicles */}
                           {option.name === "Add More Vehicles" &&
                             additionalOptions.includes("Add More Vehicles") && (
                               <div className="flex flex-col items-center mb-4">
-                                <p className="text-sm">Add an Additional</p>
-                                <div className="flex items-center mb-2 space-x-4">
-                                  <button
-                                    onClick={() =>
-                                      handleDecrement(
-                                        additionalVehicleCount,
-                                        setAdditionalVehicleCount
-                                      )
-                                    }
-                                    className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-white rounded-full"
-                                  >
-                                    <Minus />
-                                  </button>
-                                  <input
-                                    type="number"
-                                    value={additionalVehicleCount}
-                                    onChange={(e) =>
-                                      setAdditionalVehicleCount(
-                                        Math.max(
-                                          1,
-                                          parseInt(e.target.value) || 1
-                                        )
-                                      )
-                                    }
-                                    className="w-20 p-2 text-center rounded"
-                                  />
-                                  <button
-                                    onClick={() =>
-                                      handleIncrement(
-                                        additionalVehicleCount,
-                                        setAdditionalVehicleCount
-                                      )
-                                    }
-                                    className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-yellow-500 rounded-full"
-                                  >
-                                    <Plus />
-                                  </button>
-                                </div>
-                                <p className="text-sm">Vans</p>
+                                {!confirmedOptions.includes(
+                                  "Add More Vehicles"
+                                ) ? (
+                                  <>
+                                    <p className="text-sm">Add an Additional</p>
+                                    <div className="flex items-center mb-2 space-x-4">
+                                      {/* Decrement Button */}
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation(); // Prevent box click when decrementing
+                                          handleDecrement(
+                                            additionalVehicleCount,
+                                            setAdditionalVehicleCount
+                                          );
+                                        }}
+                                        disabled={additionalVehicleCount <= 1} // Disable when count <= 1
+                                        className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-white rounded-full"
+                                      >
+                                        <Minus />
+                                      </button>
+                                      {/* Input Field */}
+                                      <input
+                                        type="number"
+                                        value={additionalVehicleCount}
+                                        min={1}
+                                        max={3} // Set maximum value to 3
+                                        onChange={(e) =>
+                                          setAdditionalVehicleCount(
+                                            Math.max(
+                                              1,
+                                              Math.min(
+                                                3,
+                                                parseInt(e.target.value) || 1
+                                              )
+                                            )
+                                          )
+                                        }
+                                        className="w-20 p-2 text-center rounded"
+                                      />
+                                      {/* Increment Button */}
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation(); // Prevent box click when incrementing
+                                          if (additionalVehicleCount < 3) {
+                                            handleIncrement(
+                                              additionalVehicleCount,
+                                              setAdditionalVehicleCount
+                                            );
+                                          }
+                                        }}
+                                        disabled={additionalVehicleCount >= 3} // Disable when count >= 3
+                                        className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-yellow-500 rounded-full"
+                                      >
+                                        <Plus />
+                                      </button>
+                                    </div>
+                                    <p className="text-sm">Vehicles</p>
+                                    {/* Confirm Button */}
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation(); // Prevent box click on Confirm
+                                        handleConfirm("Add More Vehicles");
+                                      }}
+                                      className="mt-2 px-4 py-2 bg-yellow-500 text-black rounded-md w-full"
+                                    >
+                                      Confirm
+                                    </button>
+                                  </>
+                                ) : (
+                                  // Display selected number of vehicles after confirmation
+                                  <p className="text-[10px] -ml-56 -mt-2 text-gray-500">
+                                    {additionalVehicleCount} Vehicles Selected
+                                  </p>
+                                )}
                               </div>
                             )}
-                          {index < options.length - 1 && (
-                            <hr className="border-gray-400" />
-                          )}
                         </div>
                       ))}
+
                     {!showAllOptions ? (
                       <button
                         onClick={toggleOptions}
@@ -602,16 +902,16 @@ const Page1 = ({ setComponent }) => {
 
         {/* Desktop View */}
         <div className="hidden lg:block  flex-1 ">
-          <div className=" p-4 overflow-auto h-[460px] bg-white border lg:border-none ">
+          <div className=" p-4 overflow-auto h-[420px] bg-white border lg:border-none ">
             <h2 className="text-2xl font-bold text-gray-700 mb-4">
               Ready to Book a Ride?
             </h2>
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <p className="text-sm text-gray-700">
                 {formattedDate || "No date selected"}
               </p>
               <p className="text-sm text-gray-700">{time}</p>
-            </div>
+            </div> */}
             <div className="mb-1">
               <SearchBox
                 label="Pickup Location"
@@ -662,42 +962,73 @@ const Page1 = ({ setComponent }) => {
             <p className="text-2xl font-bold text-gray-700">
               Select Date & Time
             </p>
-            <p className="mb-2 text-xs text-gray-700">
-              Trip must be selected two days in advance
-            </p>
-            <div className="mb-4">
-              <div className="flex  items-center space-x-4">
-                <div className="relative">
+
+            <div className="mb-4 mt-3">
+              <div className="flex items-center space-x-4">
+                {/* Date Input */}
+                <div className="relative w-full">
+                  {/* Left Icon */}
+                  <span
+                    className="absolute inset-y-0 left-0 flex items-center pl-3 cursor-pointer"
+                    onClick={() => dateInputRef.current.showPicker()}
+                  >
+                    <Calendar className="text-black" />
+                  </span>
+                  {/* Input */}
                   <input
+                    ref={dateInputRef}
                     type="date"
-                    className={`w-full p-2 text-gray-700 border border-gray-300 rounded ${
+                    className={`w-full pl-10 py-2 text-gray-700 border border-gray-300 rounded appearance-none ${
                       isDateSelected ? "" : "text-transparent"
                     }`}
                     value={isDateSelected ? date : ""}
                     onChange={handleDateChange}
+                    onClick={() => dateInputRef.current.showPicker()}
                     onFocus={() => setIsDateSelected(true)}
                   />
+                  {/* Placeholder */}
                   {!isDateSelected && (
-                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-700 font-bold">
-                      Today
+                    <span className="absolute left-10 ml-4 top-1/2 transform -translate-y-1/2 text-gray-700 font-bold pointer-events-none">
+                      Select Date
                     </span>
                   )}
+                  {/* Right Icon */}
+                  {/* <span className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <ChevronDown className="text-black " />
+                  </span> */}
                 </div>
-                <div className="relative">
+
+                {/* Time Input */}
+                <div className="relative w-full">
+                  {/* Left Icon */}
+                  <span
+                    className="absolute inset-y-0 left-0 flex items-center pl-3 cursor-pointer"
+                    onClick={() => timeInputRef.current.showPicker()}
+                  >
+                    <Clock className="text-black" />
+                  </span>
+                  {/* Input */}
                   <input
+                    ref={timeInputRef}
                     type="time"
-                    className={`w-full p-2 text-gray-700 border border-gray-300 rounded ${
+                    className={`w-full pl-10 py-2 text-gray-700 border border-gray-300 rounded appearance-none ${
                       isTimeSelected ? "" : "text-transparent"
                     }`}
                     value={isTimeSelected ? time : ""}
                     onChange={handleTimeChange}
+                    onClick={() => timeInputRef.current.showPicker()}
                     onFocus={() => setIsTimeSelected(true)}
                   />
+                  {/* Placeholder */}
                   {!isTimeSelected && (
-                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-700 font-bold">
-                      Now
+                    <span className="absolute left-10 top-1/2 ml-4 transform -translate-y-1/2 text-gray-700 font-bold pointer-events-none">
+                      Select Time
                     </span>
                   )}
+                  {/* Right Icon */}
+                  {/* <span className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <ChevronDown className="text-black" />
+                  </span> */}
                 </div>
               </div>
             </div>
@@ -735,7 +1066,6 @@ const Page1 = ({ setComponent }) => {
                 </button>
               ))}
             </div>
-
             {vehicleType && (
               <div className="w-full p-1 mt-2 text-black border border-yellow-500 rounded-md bg-yellow-500/20">
                 <p className="flex items-center justify-between font-bold text-md">
@@ -780,130 +1110,371 @@ const Page1 = ({ setComponent }) => {
               </div>
             )}
 
+            {/* Additional Services Laptop */}
+
             <div className="mt-4 mb-4">
               <p className="text-2xl font-bold text-gray-700">
                 Additional Services
               </p>
-              <div className="p-2 mt-4 bg-gray-100 border border-gray-500 rounded-md">
+
+              {/* Split Payment Option (always on top) */}
+              <div
+                className={`p-2 mb-2 mt-4 border rounded-md shadow-sm transition-colors cursor-pointer ${
+                  splitPayment
+                    ? "border-yellow-500 bg-yellow-500/20"
+                    : "border-gray-300 bg-gray-100"
+                }`}
+                onClick={(e) => {
+                  if (e.target.tagName !== "BUTTON") {
+                    setSplitPaymentOpen(!splitPaymentOpen);
+                  }
+                }}
+              >
+                <div className="flex items-center justify-between p-2">
+                  <span className="text-sm text-black">Split Payment</span>
+
+                  {/* Toggle Button */}
+                  <button
+                    className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none ${
+                      splitPayment ? "bg-yellow-500" : "bg-gray-300"
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent box click from triggering
+                      setSplitPayment(!splitPayment); // Toggle split payment option
+                      if (!splitPayment) {
+                        setSplitPaymentOpen(true); // Open the box if toggling on
+                      } else {
+                        setSplitPaymentOpen(false); // Close the box if toggling off
+                      }
+                    }}
+                  >
+                    <span
+                      className={`${
+                        splitPayment ? "translate-x-6" : "translate-x-1"
+                      } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+                    />
+                  </button>
+                </div>
+
+                {/* Conditional content for when the box is open */}
+                {splitPaymentOpen && (
+                  <div className="flex flex-col items-center mb-4">
+                    <p className="text-sm">Select Passengers</p>
+                    <div className="flex items-center mb-2 space-x-4">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent box from closing
+                          handleDecrement(
+                            selectedPassengers,
+                            setSelectedPassengers
+                          );
+                        }}
+                        className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-white rounded-full"
+                      >
+                        <Minus />
+                      </button>
+                      <input
+                        type="number"
+                        value={selectedPassengers}
+                        onChange={(e) => {
+                          e.stopPropagation(); // Prevent closing the box
+                          setSelectedPassengers(
+                            Math.max(1, parseInt(e.target.value) || 1)
+                          );
+                        }}
+                        className="w-20 p-2 text-center rounded"
+                      />
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent box from closing
+                          handleIncrement(
+                            selectedPassengers,
+                            setSelectedPassengers
+                          );
+                        }}
+                        className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-yellow-500 rounded-full"
+                      >
+                        <Plus />
+                      </button>
+                    </div>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent box from closing
+                        handleSplitPaymentConfirm(); // Save and confirm split payment
+                      }}
+                      className="mt-2 px-4 py-2 bg-yellow-500 text-black rounded-md w-full"
+                    >
+                      Confirm
+                    </button>
+                    <p className="text-xs mt-2 text-gray-500">
+                      A fee of 5$ will be charged upfront.
+                    </p>
+                  </div>
+                )}
+
+                {/* Text when the box is closed but the option is not confirmed */}
+                {!splitPaymentOpen && !splitPayment && (
+                  <p className="text-[10px] ml-2 -mt-2 text-gray-500">
+                    (Split among friends)
+                  </p>
+                )}
+
+                {/* Show confirmed message with number of passengers when the option is confirmed */}
+                {splitPayment && !splitPaymentOpen && (
+                  <p className="text-[10px] ml-2 -mt-2 text-gray-500">
+                    ({selectedPassengers}{" "}
+                    {selectedPassengers === 1 ? "passenger" : "passengers"}{" "}
+                    Selected)
+                  </p>
+                )}
+              </div>
+
+              {/* Additional Options (below Split Payment) */}
+              <div className=" ">
                 {options
-                  .slice(0, showAllOptions ? options.length : 3)
-                  .map((option, index) => (
-                    <div key={option.name}>
+                  .filter((option) => option.name !== "Split Payment")
+                  .slice(0, showAllOptions ? options.length : 2)
+                  .map((option) => (
+                    <div
+                      key={option.name}
+                      className={`p-2 mb-2 border rounded-md shadow-sm transition-colors cursor-pointer ${
+                        additionalOptions.includes(option.name)
+                          ? "border-yellow-500 bg-yellow-500/20"
+                          : "border-gray-300 bg-gray-100"
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // Handle option selection and allow editing after confirmation
+                        if (option.name === "Hourly Bookings") {
+                          // If confirmed, reset confirmation
+                          if (confirmedOptions.includes("Hourly Bookings")) {
+                            setConfirmedOptions(
+                              confirmedOptions.filter(
+                                (name) => name !== "Hourly Bookings"
+                              )
+                            );
+                          }
+                          handleOptionChange(option);
+                        } else if (option.name === "Add More Vehicles") {
+                          if (confirmedOptions.includes("Add More Vehicles")) {
+                            setConfirmedOptions(
+                              confirmedOptions.filter(
+                                (name) => name !== "Add More Vehicles"
+                              )
+                            );
+                          }
+                          handleOptionChange(option);
+                        } else {
+                          handleOptionChange(option);
+                        }
+                      }}
+                    >
                       <div className="flex items-center justify-between p-2">
-                        <label className="flex items-center space-x-2">
-                          <input
-                            type="checkbox"
-                            checked={additionalOptions.includes(option.name)}
-                            onChange={() => handleOptionChange(option)}
-                            className="w-4 h-4 text-yellow-200 border-gray-300 rounded-full"
-                          />
-                          <span className="text-sm text-black">
-                            {option.name}
-                          </span>
-                        </label>
-                        <span className="text-sm text-gray-600">
-                          {option.name === "Hourly Bookings"
-                            ? `$${vehicleDetails.hourlyRate || 0}`
-                            : option.price}
+                        <span className="text-sm text-black">
+                          {option.name}
+                        </span>
+
+                        {/* Display Price */}
+
+                        <span className="text-sm text-black font-bold">
+                          {option.name === "Hourly Bookings" && vehicleDetails
+                            ? confirmedOptions.includes("Hourly Bookings")
+                              ? `$${(
+                                  hourlyBookingCount *
+                                  (vehicleDetails.hourlyRate || 0)
+                                ).toFixed(2)}`
+                              : `$${vehicleDetails.hourlyRate || 0}.00`
+                            : option.name === "Add More Vehicles"
+                            ? confirmedOptions.includes("Add More Vehicles")
+                              ? `$${(
+                                  additionalVehicleCount * (option.price || 0)
+                                ).toFixed(2)}`
+                              : `$${option.price || 0}.00`
+                            : option.price
+                            ? `$${option.price.toFixed(2)}`
+                            : "10.00$"}
                         </span>
                       </div>
+
+                      {/* Subheading for Hourly Bookings */}
+                      {option.name === "Hourly Bookings" &&
+                        !additionalOptions.includes("Hourly Bookings") && (
+                          <p className="text-[10px] ml-2 -mt-2 text-gray-500">
+                            Minimum 3 hours
+                          </p>
+                        )}
+
+                      {/* Subheading for Add More Vehicles */}
+                      {option.name === "Add More Vehicles" &&
+                        !additionalOptions.includes("Add More Vehicles") && (
+                          <p className="text-[10px] ml-2 -mt-2 text-gray-500">
+                            Book Upto 3 Vehicles
+                          </p>
+                        )}
+
+                      {/* Conditional Render for Hourly Bookings */}
                       {option.name === "Hourly Bookings" &&
                         additionalOptions.includes("Hourly Bookings") && (
                           <div className="flex flex-col items-center mb-4">
-                            <p className="text-sm">Book for</p>
-                            <div className="flex items-center mb-2 space-x-4">
-                              <button
-                                onClick={() =>
-                                  handleDecrement(
-                                    hourlyBookingCount,
-                                    setHourlyBookingCount
-                                  )
-                                }
-                                className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-white rounded-full"
-                              >
-                                <Minus />
-                              </button>
-                              <input
-                                type="number"
-                                value={hourlyBookingCount}
-                                onChange={(e) =>
-                                  setHourlyBookingCount(
-                                    Math.max(1, parseInt(e.target.value) || 1)
-                                  )
-                                }
-                                className="w-20 p-2 text-center rounded"
-                              />
-                              <button
-                                onClick={() =>
-                                  handleIncrement(
-                                    hourlyBookingCount,
-                                    setHourlyBookingCount
-                                  )
-                                }
-                                className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-yellow-500 rounded-full"
-                              >
-                                <Plus />
-                              </button>
-                            </div>
-                            <p className="text-sm">Hours</p>
+                            {!confirmedOptions.includes("Hourly Bookings") ? (
+                              <>
+                                <p className="text-sm">Book for</p>
+                                <div className="flex items-center mb-2 space-x-4">
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDecrement(
+                                        hourlyBookingCount,
+                                        setHourlyBookingCount
+                                      );
+                                    }}
+                                    disabled={hourlyBookingCount <= 3} // Ensure it doesn’t go below 3
+                                    className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-white rounded-full"
+                                  >
+                                    <Minus />
+                                  </button>
+
+                                  <input
+                                    type="number"
+                                    value={hourlyBookingCount}
+                                    min={3} // Set the minimum value to 3
+                                    onChange={(e) =>
+                                      setHourlyBookingCount(
+                                        Math.max(
+                                          3,
+                                          parseInt(e.target.value) || 3
+                                        ) // Ensure the value doesn't go below 3
+                                      )
+                                    }
+                                    className="w-20 p-2 text-center rounded"
+                                  />
+
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleIncrement(
+                                        hourlyBookingCount,
+                                        setHourlyBookingCount
+                                      );
+                                    }}
+                                    className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-yellow-500 rounded-full"
+                                  >
+                                    <Plus />
+                                  </button>
+                                </div>
+
+                                <p className="text-sm">Hours</p>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleConfirm("Hourly Bookings");
+                                  }}
+                                  className="mt-2 px-4 py-2 bg-yellow-500 text-black rounded-md w-full"
+                                >
+                                  Confirm
+                                </button>
+                              </>
+                            ) : (
+                              <p className="text-[10px] -ml-56 -mt-2 text-gray-500">
+                                Booked for {hourlyBookingCount} hours!
+                              </p>
+                            )}
                           </div>
                         )}
+
+                      {/* Conditional Render for Add More Vehicles */}
                       {option.name === "Add More Vehicles" &&
                         additionalOptions.includes("Add More Vehicles") && (
                           <div className="flex flex-col items-center mb-4">
-                            <p className="text-sm">Add an Additional</p>
-                            <div className="flex items-center mb-2 space-x-4">
-                              <button
-                                onClick={() =>
-                                  handleDecrement(
-                                    additionalVehicleCount,
-                                    setAdditionalVehicleCount
-                                  )
-                                }
-                                className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-white rounded-full"
-                              >
-                                <Minus />
-                              </button>
-                              <input
-                                type="number"
-                                value={additionalVehicleCount}
-                                onChange={(e) =>
-                                  setAdditionalVehicleCount(
-                                    Math.max(1, parseInt(e.target.value) || 1)
-                                  )
-                                }
-                                className="w-20 p-2 text-center rounded"
-                              />
-                              <button
-                                onClick={() =>
-                                  handleIncrement(
-                                    additionalVehicleCount,
-                                    setAdditionalVehicleCount
-                                  )
-                                }
-                                className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-yellow-500 rounded-full"
-                              >
-                                <Plus />
-                              </button>
-                            </div>
-                            <p className="text-sm">Vans</p>
+                            {!confirmedOptions.includes("Add More Vehicles") ? (
+                              <>
+                                <p className="text-sm">Add an Additional</p>
+                                <div className="flex items-center mb-2 space-x-4">
+                                  {/* Decrement Button */}
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation(); // Prevent box click when decrementing
+                                      handleDecrement(
+                                        additionalVehicleCount,
+                                        setAdditionalVehicleCount
+                                      );
+                                    }}
+                                    disabled={additionalVehicleCount <= 1} // Disable when count <= 1
+                                    className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-white rounded-full"
+                                  >
+                                    <Minus />
+                                  </button>
+                                  {/* Input Field */}
+                                  <input
+                                    type="number"
+                                    value={additionalVehicleCount}
+                                    min={1}
+                                    max={3} // Set maximum value to 3
+                                    onChange={(e) =>
+                                      setAdditionalVehicleCount(
+                                        Math.max(
+                                          1,
+                                          Math.min(
+                                            3,
+                                            parseInt(e.target.value) || 1
+                                          )
+                                        )
+                                      )
+                                    }
+                                    className="w-20 p-2 text-center rounded"
+                                  />
+                                  {/* Increment Button */}
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation(); // Prevent box click when incrementing
+                                      if (additionalVehicleCount < 3) {
+                                        handleIncrement(
+                                          additionalVehicleCount,
+                                          setAdditionalVehicleCount
+                                        );
+                                      }
+                                    }}
+                                    disabled={additionalVehicleCount >= 3} // Disable when count >= 3
+                                    className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-yellow-500 rounded-full"
+                                  >
+                                    <Plus />
+                                  </button>
+                                </div>
+                                <p className="text-sm">Vehicles</p>
+                                {/* Confirm Button */}
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation(); // Prevent box click on Confirm
+                                    handleConfirm("Add More Vehicles");
+                                  }}
+                                  className="mt-2 px-4 py-2 bg-yellow-500 text-black rounded-md w-full"
+                                >
+                                  Confirm
+                                </button>
+                              </>
+                            ) : (
+                              // Display selected number of vehicles after confirmation
+                              <p className="text-[10px] -ml-56 -mt-2 text-gray-500">
+                                {additionalVehicleCount} Vehicles Selected
+                              </p>
+                            )}
                           </div>
                         )}
-                      {index < options.length - 1 && (
-                        <hr className="border-gray-400" />
-                      )}
                     </div>
                   ))}
+
+                {/* Show/Hide options toggle button */}
                 {!showAllOptions ? (
                   <button
-                    onClick={toggleOptions}
+                    onClick={() => setShowAllOptions(true)}
                     className="w-full py-1 text-center text-black text-xs"
                   >
                     See all
                   </button>
                 ) : (
                   <button
-                    onClick={toggleOptions}
+                    onClick={() => setShowAllOptions(false)}
                     className="w-full py-1 text-center text-black text-xs"
                   >
                     Show Less
@@ -913,16 +1484,16 @@ const Page1 = ({ setComponent }) => {
             </div>
           </div>
           {error && <div className=" text-red-500 text-sm">{error}</div>}
-          {/* uncomment this when final launch */}
-          {/* <button className="w-full bg-yellow-500/20 text-black p-2 rounded-md font-bold">
-            Total Price: ${totalPrice.toFixed(2)} ...
-          </button> */}
+
+          <button className="w-full bg-yellow-500/20 text-black p-2 rounded-md font-bold">
+            Total Price: ${totalPrice.toFixed(2)}
+          </button>
 
           <button
-            // onClick={handleNextComponent}
+            onClick={handleNextComponent}
             className="w-full bg-yellow-500 text-black p-2 font-bold"
           >
-            {/* Next */} Launching Soon
+            Next
           </button>
         </div>
       </div>
