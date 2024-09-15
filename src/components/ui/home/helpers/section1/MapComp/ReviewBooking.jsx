@@ -4,11 +4,17 @@ import useStore from "@/lib/store";
 import Image from "next/image";
 import { ArrowLeftIcon, Phone, Mail, MapPin } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
 
 const ReviewBooking = ({ setComponent }) => {
   const {
     date,
     pickup,
+    time,
     stop,
     destination,
     vehicleDetails,
@@ -26,11 +32,14 @@ const ReviewBooking = ({ setComponent }) => {
     calculateTotalPrice,
     orderNumber,
     setOrderNumber,
+    driverNote, // Now correctly using driverNote
     splitPaymentDetails, // Fetch split payment details from Zustand
   } = useStore((state) => ({
     date: state.date,
     pickup: state.pickup,
+    time: state.time,
     stop: state.stop,
+    driverNote: state.driverNote, // Correctly fetching driverNote from Zustand
     destination: state.destination,
     vehicleDetails: state.vehicleDetails,
     occasion: state.occasion,
@@ -67,7 +76,6 @@ const ReviewBooking = ({ setComponent }) => {
 
       const orderNum = generateOrderNumber();
       setOrderNumber(orderNum);
-      // console.log("Order Number set to:", orderNum); // Console log to monitor
     }
   }, [
     vehicleDetails,
@@ -102,9 +110,79 @@ const ReviewBooking = ({ setComponent }) => {
 
   // Calculate price per person if split payment was selected
   const pricePerPerson =
-    splitPaymentDetails.passengers && splitPaymentDetails.passengers > 0
+    splitPaymentDetails?.passengers && splitPaymentDetails.passengers > 0
       ? (totalPrice / splitPaymentDetails.passengers).toFixed(2)
       : null;
+
+  // Stripe function
+  const handleBookRide = async () => {
+    try {
+      // Get Stripe.js instance
+      const stripe = await stripePromise;
+
+      // Prepare the data to send, only include options that are selected
+      const requestData = {
+        orderNumber,
+        date,
+        time,
+        pickup: pickup?.name || "N/A",
+        destination: destination?.name || "N/A",
+        vehicleName: vehicleDetails?.name || "N/A",
+        passengers: passengers || 1, // Set default if passengers is not defined
+        distanceToEnd: distanceStartToEnd,
+        additionalOptions:
+          additionalOptions.length > 0 ? additionalOptions : null, // Send only if present
+        hourlyBookingCount: hourlyBookingCount > 0 ? hourlyBookingCount : null, // Only if selected
+        additionalVehicleCount:
+          additionalVehicleCount > 0 ? additionalVehicleCount : null, // Only if selected
+        totalPrice,
+        splitPaymentDetails: splitPaymentDetails?.passengers
+          ? splitPaymentDetails
+          : null, // Only if split payment is selected
+        contact: {
+          name: contact?.name || "N/A",
+          email: contact?.email || "N/A",
+          phone: contact?.phone || "N/A",
+        },
+        noteToDriver: driverNote || "", // Now correctly sending driverNote
+        occasion: occasion || "", // Optional occasion field
+      };
+
+      // Call your backend to create the Checkout Session
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Error from server:", errorText);
+        alert(
+          "An error occurred while processing your request. Please try again."
+        );
+        return;
+      }
+
+      const data = await response.json();
+
+      // Redirect to Stripe Checkout
+      const result = await stripe.redirectToCheckout({
+        sessionId: data.sessionId,
+      });
+
+      if (result.error) {
+        // Inform the customer that there was an error.
+        console.error(result.error.message);
+        alert("There was an issue with your payment. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during booking:", error);
+      alert("An unexpected error occurred. Please try again.");
+    }
+  };
 
   return (
     <div className="lg:p-0 p-3">
@@ -140,15 +218,15 @@ const ReviewBooking = ({ setComponent }) => {
         <div className="mb-4">
           <div className="flex flex-col items-center justify-center w-24 p-2 bg-white border border-yellow-600 rounded-lg h-28">
             <Image
-              src={vehicleDetails.image}
-              alt={vehicleDetails.name}
+              src={vehicleDetails?.image}
+              alt={vehicleDetails?.name || "N/A"}
               height={70}
               width={70}
               layout="fixed"
               className="mb-2 rounded-lg"
             />
             <p className="mt-2 text-sm text-center text-black">
-              {vehicleDetails.name}
+              {vehicleDetails?.name || "N/A"}
             </p>
           </div>
         </div>
@@ -193,7 +271,7 @@ const ReviewBooking = ({ setComponent }) => {
         <hr className="mb-4" />
         <div className="mb-4">
           <h2 className="font-semibold text-gray-700">Occasion</h2>
-          <p>{occasion}</p>
+          <p>{occasion || "None"}</p>
         </div>
         <hr className="mb-4" />
         <div className="mb-4">
@@ -206,7 +284,7 @@ const ReviewBooking = ({ setComponent }) => {
           <div className="grid mt-2 gap-y-2">
             <div className="flex justify-between">
               <p className="text-xs">Base Fare</p>
-              <p className="text-xs">${vehicleDetails.baseFare}</p>
+              <p className="text-xs">${vehicleDetails?.baseFare}</p>
             </div>
             <div className="flex justify-between">
               <p className="text-xs">Distance Charge</p>
@@ -271,7 +349,7 @@ const ReviewBooking = ({ setComponent }) => {
         </p>
       </div>
       <button
-        onClick={() => setComponent(4)}
+        onClick={handleBookRide}
         className="mt-4 lg:mt-0 w-full p-2 font-bold text-black bg-yellow-500 rounded-lg"
       >
         Book Ride
