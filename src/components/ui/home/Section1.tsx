@@ -5,7 +5,6 @@ import useStore from "@/lib/store";
 import Page1 from "../home/helpers/section1/MapComp/Page1";
 import Page2 from "../home/helpers/section1/MapComp/Page2";
 import ReviewBooking from "../home/helpers/section1/MapComp/ReviewBooking";
-// import Confirmed from "../home/helpers/section1/MapComp/Confirmed";
 
 export default function Section1() {
   const [component, setComponent] = useState(1);
