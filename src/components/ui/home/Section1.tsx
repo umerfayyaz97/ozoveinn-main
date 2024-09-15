@@ -21,7 +21,6 @@ export default function Section1() {
           {component === 1 && <Page1 setComponent={setComponent} />}
           {component === 2 && <Page2 setComponent={setComponent} />}
           {component === 3 && <ReviewBooking setComponent={setComponent} />}
-          {/* {component === 4 && <Confirmed />} */}
         </div>
       </div>
     </div>
