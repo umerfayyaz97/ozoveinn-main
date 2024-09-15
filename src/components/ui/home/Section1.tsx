@@ -8,7 +8,7 @@ import ReviewBooking from "../home/helpers/section1/MapComp/ReviewBooking";
 // import Confirmed from "../home/helpers/section1/MapComp/Confirmed";
 
 export default function Section1() {
-  const [component, setComponent] = useState(1);
+  const [component, setComponent] = useState(3);
   const state = useStore((state) => state);
 
   return (
