@@ -124,6 +124,12 @@ const Page1 = ({ setComponent }) => {
   };
 
   const handleOptionChange = (option) => {
+    if (option.name === "Hourly Bookings") {
+      if (!additionalOptions.includes(option.name)) {
+        setHourlyBookingCount(3); // Set the minimum value for hourly bookings to 3 when the option is first selected
+      }
+    }
+
     if (additionalOptions.includes(option.name)) {
       setAdditionalOptions(
         additionalOptions.filter((opt) => opt !== option.name)
@@ -131,6 +137,7 @@ const Page1 = ({ setComponent }) => {
     } else {
       setAdditionalOptions([...additionalOptions, option.name]);
     }
+
     calculateTotalPrice();
   };
 
@@ -307,7 +314,7 @@ const Page1 = ({ setComponent }) => {
                 )}
 
                 {/* uncomment this when final launch */}
-                {/* 
+                {/*
                 <button className="w-full bg-yellow-500/20 text-black p-2 rounded-md font-bold">
                   Total Price: ${totalPrice.toFixed(2)}
                 </button> */}
@@ -1324,7 +1331,7 @@ const Page1 = ({ setComponent }) => {
                         )}
 
                       {/* Conditional Render for Hourly Bookings */}
-                      {option.name === "Hourly Bookings" &&
+                      {/* {option.name === "Hourly Bookings" &&
                         additionalOptions.includes("Hourly Bookings") && (
                           <div className="flex flex-col items-center mb-4">
                             {!confirmedOptions.includes("Hourly Bookings") ? (
@@ -1374,6 +1381,73 @@ const Page1 = ({ setComponent }) => {
                                   </button>
                                 </div>
 
+                                <p className="text-sm">Hours</p>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleConfirm("Hourly Bookings");
+                                  }}
+                                  className="mt-2 px-4 py-2 bg-yellow-500 text-black rounded-md w-full"
+                                >
+                                  Confirm
+                                </button>
+                              </>
+                            ) : (
+                              <p className="text-[10px] -ml-56 -mt-2 text-gray-500">
+                                Booked for {hourlyBookingCount} hours!
+                              </p>
+                            )}
+                          </div>
+                        )} */}
+                      {option.name === "Hourly Bookings" &&
+                        additionalOptions.includes("Hourly Bookings") && (
+                          <div className="flex flex-col items-center mb-4">
+                            {!confirmedOptions.includes("Hourly Bookings") ? (
+                              <>
+                                <p className="text-sm">Book for</p>
+                                <div className="flex items-center mb-2 space-x-4">
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDecrement(
+                                        hourlyBookingCount,
+                                        setHourlyBookingCount
+                                      );
+                                    }}
+                                    disabled={hourlyBookingCount <= 3} // Ensure it doesn’t go below 3
+                                    className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-white rounded-full"
+                                  >
+                                    <Minus />
+                                  </button>
+                                  <div className="border-2 border-yellow-500 rounded-md">
+                                    <input
+                                      type="number"
+                                      value={hourlyBookingCount}
+                                      min={3} // Set the minimum value to 3
+                                      onChange={(e) =>
+                                        setHourlyBookingCount(
+                                          Math.max(
+                                            3,
+                                            parseInt(e.target.value) || 3
+                                          ) // Ensure the value doesn't go below 3
+                                        )
+                                      }
+                                      className="w-20 p-2 text-center rounded-md focus:outline-none"
+                                    />
+                                  </div>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleIncrement(
+                                        hourlyBookingCount,
+                                        setHourlyBookingCount
+                                      );
+                                    }}
+                                    className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-yellow-500 rounded-full"
+                                  >
+                                    <Plus />
+                                  </button>
+                                </div>
                                 <p className="text-sm">Hours</p>
                                 <button
                                   onClick={(e) => {

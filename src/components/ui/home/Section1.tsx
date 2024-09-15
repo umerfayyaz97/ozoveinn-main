@@ -5,10 +5,10 @@ import useStore from "@/lib/store";
 import Page1 from "../home/helpers/section1/MapComp/Page1";
 import Page2 from "../home/helpers/section1/MapComp/Page2";
 import ReviewBooking from "../home/helpers/section1/MapComp/ReviewBooking";
-import Confirmed from "../home/helpers/section1/MapComp/Confirmed";
+// import Confirmed from "../home/helpers/section1/MapComp/Confirmed";
 
 export default function Section1() {
-  const [component, setComponent] = useState(1);
+  const [component, setComponent] = useState(3);
   const state = useStore((state) => state);
 
   return (
@@ -21,7 +21,7 @@ export default function Section1() {
           {component === 1 && <Page1 setComponent={setComponent} />}
           {component === 2 && <Page2 setComponent={setComponent} />}
           {component === 3 && <ReviewBooking setComponent={setComponent} />}
-          {component === 4 && <Confirmed />}
+          {/* {component === 4 && <Confirmed />} */}
         </div>
       </div>
     </div>
