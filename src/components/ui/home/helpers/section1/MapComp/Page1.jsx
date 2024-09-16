@@ -4,6 +4,7 @@ import axios from "axios";
 import Image from "next/image";
 import useStore from "@/lib/store";
 import SearchBox from "./SearchBox";
+
 import {
   Info,
   ArrowLeftIcon,
@@ -14,7 +15,7 @@ import {
   Plus,
   Calendar,
   Clock,
-  // ChevronDown,
+  ChevronDown,
 } from "lucide-react";
 
 const Page1 = ({ setComponent }) => {
@@ -48,7 +49,7 @@ const Page1 = ({ setComponent }) => {
   } = useStore();
 
   const [showAllOptions, setShowAllOptions] = useState(false);
-  const [formStep, setFormStep] = useState(1);
+  // const [formStep, setFormStep] = useState(1);
   const [error, setError] = useState("");
   const [isDateSelected, setIsDateSelected] = useState(false);
   const [isTimeSelected, setIsTimeSelected] = useState(false);
@@ -67,10 +68,10 @@ const Page1 = ({ setComponent }) => {
 
   const vehicles = {
     smallVan: {
-      name: "Bus",
+      name: "Van",
       image: "/vehicles/Vito1.png",
       passengerLimit: "8 Seater",
-      averageCostPerPerson: "$15",
+      averageCostPerPerson: "$10",
       minimumPassengers: 4,
       cardDetails: "Mercedes-Benz V-Class or Similar",
       baseFare: 40,
@@ -80,23 +81,33 @@ const Page1 = ({ setComponent }) => {
       name: "Mini Bus",
       image: "/vehicles/2.png",
       passengerLimit: "10 Seater",
-      averageCostPerPerson: "$20",
+      averageCostPerPerson: "$22",
       minimumPassengers: 2,
       cardDetails: "Toyota Hi- Ace or Similar",
-      baseFare: 50,
+      baseFare: 60,
       hourlyRate: 100,
     },
     bus: {
       name: "Bus",
       image: "/vehicles/coaster.png",
       passengerLimit: "30 Seater",
-      averageCostPerPerson: "$10",
+      averageCostPerPerson: "$35",
       minimumPassengers: 3,
       cardDetails: "Toyota Coaster or Similar",
-      baseFare: 150,
+      baseFare: 90,
       hourlyRate: 150,
     },
   };
+
+  const { formStep, setFormStep } = useStore();
+
+  const additionalVehicleExtraAmount = useStore(
+    (state) => state.additionalVehicleExtraAmount
+  );
+
+  const luggageTrailerExtraAmount = useStore(
+    (state) => state.luggageTrailerExtraAmount
+  );
 
   const handleConfirm = (optionName) => {
     setConfirmedOptions([...confirmedOptions, optionName]);
@@ -240,6 +251,10 @@ const Page1 = ({ setComponent }) => {
       setError("");
       setFormStep(2);
     }
+  };
+
+  const handleBackClick = () => {
+    setFormStep(1); // Set formStep back to 1 using Zustand
   };
 
   const handleNextComponent = () => {
@@ -461,7 +476,7 @@ const Page1 = ({ setComponent }) => {
                         {vehicles[type].passengerLimit}
                       </p>
                       <p className="text-sm font-bold text-black">
-                        {vehicles[type].averageCostPerPerson}
+                        <span>From ${vehicles[type].baseFare}</span>
                       </p>
                     </button>
                   ))}
@@ -693,10 +708,15 @@ const Page1 = ({ setComponent }) => {
                                 : option.name === "Add More Vehicles"
                                 ? confirmedOptions.includes("Add More Vehicles")
                                   ? `$${(
-                                      additionalVehicleCount *
-                                      (option.price || 0)
+                                      additionalVehicleExtraAmount || 0
                                     ).toFixed(2)}`
-                                  : `$${option.price || 0}.00`
+                                  : "$0.00"
+                                : option.name === "Luggage Trailer"
+                                ? additionalOptions.includes("Luggage Trailer") // Check if Luggage Trailer is selected
+                                  ? `$${(
+                                      luggageTrailerExtraAmount || 0
+                                    ).toFixed(2)}` // Display luggage trailer amount
+                                  : "$0.00"
                                 : option.price
                                 ? `$${option.price.toFixed(2)}`
                                 : "10.00$"}
@@ -882,7 +902,10 @@ const Page1 = ({ setComponent }) => {
                         onClick={toggleOptions}
                         className="w-full py-1 text-center text-black text-xs"
                       >
-                        See all
+                        <span>
+                          See all
+                          <ChevronDown className="text-black ml-[210px] w-4 h-4 -mt-4 " />
+                        </span>
                       </button>
                     ) : (
                       <button
@@ -1052,7 +1075,7 @@ const Page1 = ({ setComponent }) => {
               {Object.keys(vehicles).map((type) => (
                 <button
                   key={type}
-                  className={`flex flex-col justify-center w-1/3 p-2 h-30 rounded-lg ${
+                  className={`flex  flex-col justify-center w-1/3 p-2 h-30 rounded-lg ${
                     vehicleType === type
                       ? "bg-white border border-yellow-500"
                       : "bg-gray-200 border border-gray-300"
@@ -1074,7 +1097,7 @@ const Page1 = ({ setComponent }) => {
                     {vehicles[type].passengerLimit}
                   </p>
                   <p className="text-sm font-bold text-black">
-                    {vehicles[type].averageCostPerPerson}
+                    <span>From ${vehicles[type].baseFare}</span>
                   </p>
                 </button>
               ))}
@@ -1304,10 +1327,16 @@ const Page1 = ({ setComponent }) => {
                               : `$${vehicleDetails.hourlyRate || 0}.00`
                             : option.name === "Add More Vehicles"
                             ? confirmedOptions.includes("Add More Vehicles")
-                              ? `$${(
-                                  additionalVehicleCount * (option.price || 0)
-                                ).toFixed(2)}`
-                              : `$${option.price || 0}.00`
+                              ? `$${(additionalVehicleExtraAmount || 0).toFixed(
+                                  2
+                                )}`
+                              : "$0.00"
+                            : option.name === "Luggage Trailer"
+                            ? additionalOptions.includes("Luggage Trailer") // Check if Luggage Trailer is selected
+                              ? `$${(luggageTrailerExtraAmount || 0).toFixed(
+                                  2
+                                )}` // Display luggage trailer amount
+                              : "$0.00"
                             : option.price
                             ? `$${option.price.toFixed(2)}`
                             : "10.00$"}
@@ -1489,7 +1518,10 @@ const Page1 = ({ setComponent }) => {
                     onClick={() => setShowAllOptions(true)}
                     className="w-full py-1 text-center text-black text-xs"
                   >
-                    See all
+                    <span>
+                      See all
+                      <ChevronDown className="text-black ml-[200px] w-4 h-4 -mt-4 " />
+                    </span>
                   </button>
                 ) : (
                   <button
@@ -1500,6 +1532,7 @@ const Page1 = ({ setComponent }) => {
                   </button>
                 )}
               </div>
+              {/* ----- */}
             </div>
           </div>
           {error && <div className=" text-red-500 text-sm">{error}</div>}

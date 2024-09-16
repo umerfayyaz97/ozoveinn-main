@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useStore from "@/lib/store";
 import { ArrowLeftIcon, Minus, Plus } from "lucide-react";
 
@@ -53,12 +53,37 @@ const Page2 = ({ setComponent }) => {
     }
   };
 
+  const [moveToFormStep2, setMoveToFormStep2] = useState(false);
+
+  useEffect(() => {
+    if (moveToFormStep2) {
+      // Set formStep to 2 after the component changes
+      setFormStep(2);
+      setMoveToFormStep2(false); // Reset the flag
+    }
+  }, [moveToFormStep2]);
+
   return (
     <div className="lg:p-0 p-3">
       <div className="w-full p-4 lg:h-[420px] lg:overflow-auto text-black bg-white shadow-lg rounded-lg border border-gray-300 lg:border-none">
-        <button onClick={() => setComponent(1)} className="mb-4 text-gray-700">
+        {/* <button onClick={() => setComponent(1)} className="mb-4 text-gray-700">
+          <ArrowLeftIcon className="w-6 h-6" />
+        </button> */}
+
+        <button
+          onClick={() => {
+            if (window.innerWidth < 1024) {
+              setComponent(1); // Navigate to Page 1
+              setMoveToFormStep2(true); // Set flag to trigger formStep 2
+            } else {
+              setComponent(1); // On desktop, only move component
+            }
+          }}
+          className="mb-4 text-gray-700"
+        >
           <ArrowLeftIcon className="w-6 h-6" />
         </button>
+
         <h1 className="mb-4 text-2xl font-bold text-gray-700">
           Booking Details
         </h1>

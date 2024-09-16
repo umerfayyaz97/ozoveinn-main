@@ -3,6 +3,7 @@ import { create } from "zustand";
 
 const useStore = create(
   devtools((set) => ({
+    formStep: 1,
     date: "",
     pickup: null,
     stop: null,
@@ -22,17 +23,14 @@ const useStore = create(
     totalPrice: 0,
     hourlyBookingCount: 0,
     additionalVehicleCount: 0,
-    splitPaymentDetails: { passengers: 0 }, // New state for split payment details
-    passengers: 0, // Number of passengers state
-    setPassengers: (passengers) => set({ passengers }), // Set number of passengers
-    setSplitPaymentDetails: (details) => set({ splitPaymentDetails: details }), // Set split payment details
-    additionalOptions: [], // Additional services selected
-    setAdditionalOptions: (options) => set({ additionalOptions: options }),
+    additionalVehicleExtraAmount: 0, // Track the extra amount added for additional vehicles
+    luggageTrailerExtraAmount: 0, // Track the extra amount added for luggage trailers
+    splitPaymentDetails: { passengers: 0 },
     orderNumber: "",
     options: [
       { name: "Hourly Bookings", price: "$10" },
       { name: "Add More Vehicles", price: "$15" },
-      { name: "Luggage Trailer", price: "$30" },
+      { name: "Luggage Trailer", price: "$30" }, // Base price for reference
     ],
     vehicles: {
       smallVan: {
@@ -66,6 +64,7 @@ const useStore = create(
         hourlyRate: 150,
       },
     },
+    setFormStep: (step) => set({ formStep: step }),
     setDate: (date) => set((state) => ({ ...state, date })),
     setTime: (time) => set((state) => ({ ...state, time })),
     setPickup: (pickup) => set((state) => ({ ...state, pickup })),
@@ -93,14 +92,10 @@ const useStore = create(
       set((state) => ({ ...state, hourlyBookingCount })),
     setAdditionalVehicleCount: (additionalVehicleCount) =>
       set((state) => ({ ...state, additionalVehicleCount })),
-
-    // New setter for splitPayment
-    setSplitPayment: (splitPayment) =>
-      set((state) => ({ ...state, splitPayment })),
-
-    // New setter for selectedPassengers in splitPayment
-    setSelectedPassengers: (selectedPassengers) =>
-      set((state) => ({ ...state, selectedPassengers })),
+    setSplitPaymentDetails: (splitPaymentDetails) =>
+      set((state) => ({ ...state, splitPaymentDetails })),
+    setOrderNumber: (orderNumber) =>
+      set((state) => ({ ...state, orderNumber })),
 
     calculateTotalPrice: () =>
       set((state) => {
@@ -108,8 +103,55 @@ const useStore = create(
           state.distanceStartToEnd +
           state.distanceStartToStop +
           state.distanceStopToEnd;
-        const vehicleBaseFare = state.vehicleDetails?.baseFare || 0;
-        const hourlyRate = state.vehicleDetails?.hourlyRate || 0;
+
+        // Determine base fare and per-km rate based on vehicle type
+        let baseFare = 0;
+        let perKmFare = 0;
+
+        if (state.vehicleType === "smallVan") {
+          baseFare = 40; // Van base fare for 5km
+          perKmFare = 4.5; // Van per km fare
+        } else if (state.vehicleType === "largeVan") {
+          baseFare = 60; // Mini Bus base fare for 5km
+          perKmFare = 6.5; // Mini Bus per km fare
+        } else if (state.vehicleType === "bus") {
+          baseFare = 90; // Bus base fare for 5km
+          perKmFare = 9.5; // Bus per km fare
+        }
+
+        // Calculate additional fare for distance beyond the base 5km
+        const distanceFare = distance > 5 ? (distance - 5) * perKmFare : 0;
+
+        // Calculate the total vehicle cost (base fare + distance fare) for 1 vehicle
+        let totalVehiclePrice = baseFare + distanceFare;
+
+        let additionalVehicleExtraAmount = 0;
+        let luggageTrailerExtraAmount = 0;
+
+        // Handle additional vehicle pricing (extra amount)
+        if (state.additionalOptions.includes("Add More Vehicles")) {
+          additionalVehicleExtraAmount =
+            totalVehiclePrice * state.additionalVehicleCount;
+          totalVehiclePrice += additionalVehicleExtraAmount;
+        } else {
+          additionalVehicleExtraAmount = 0;
+          set((state) => ({ additionalVehicleCount: 0 }));
+        }
+
+        // Handle luggage trailer pricing based on vehicle type
+        if (state.additionalOptions.includes("Luggage Trailer")) {
+          if (
+            state.vehicleType === "smallVan" ||
+            state.vehicleType === "largeVan"
+          ) {
+            luggageTrailerExtraAmount = 20;
+          } else if (state.vehicleType === "bus") {
+            luggageTrailerExtraAmount = 30;
+          }
+          totalVehiclePrice += luggageTrailerExtraAmount;
+        } else {
+          luggageTrailerExtraAmount = 0;
+        }
 
         const additionalOptionsCost = state.additionalOptions.reduce(
           (acc, option) => {
@@ -119,11 +161,15 @@ const useStore = create(
             const optionPrice = optionDetails?.price.replace("$", "") || 0;
 
             if (option === "Hourly Bookings") {
-              return acc + hourlyRate * state.hourlyBookingCount;
-            } else if (option === "Add More Vehicles") {
               return (
-                acc + parseFloat(optionPrice) * state.additionalVehicleCount
+                acc + state.vehicleDetails.hourlyRate * state.hourlyBookingCount
               );
+            } else if (
+              option === "Add More Vehicles" ||
+              option === "Luggage Trailer"
+            ) {
+              // Price already handled separately
+              return acc;
             } else {
               return acc + parseFloat(optionPrice);
             }
@@ -131,13 +177,17 @@ const useStore = create(
           0
         );
 
-        const totalPrice =
-          vehicleBaseFare + distance * 2 + additionalOptionsCost; // Distance charge is 2 per km
-        return { ...state, totalPrice };
+        const totalPrice = totalVehiclePrice + additionalOptionsCost;
+
+        return {
+          ...state,
+          totalPrice,
+          additionalVehicleExtraAmount, // Store extra amount added by additional vehicles
+          luggageTrailerExtraAmount, // Store extra amount added by luggage trailer
+        };
       }),
 
     setDistances: (distances) => set((state) => ({ ...state, ...distances })),
-    setOrderNumber: (orderNumber) => set({ orderNumber }),
   }))
 );
 
