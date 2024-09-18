@@ -492,12 +492,14 @@ const Page1 = ({ setComponent }) => {
                       <p className="flex items-center text-sm">
                         {/* Check if splitPayment is ON */}
                         {splitPayment ? (
-                          // Calculate and display price per person when split payment is on
+                          // Check if passengers are confirmed and greater than 0, otherwise show $0
                           <strong className="mr-1 text-yellow-500 text-xl">
                             Price Per Person $
-                            {(
-                              totalPrice / splitPaymentDetails.passengers
-                            ).toFixed(2)}
+                            {splitPaymentDetails.passengers > 0
+                              ? (
+                                  totalPrice / splitPaymentDetails.passengers
+                                ).toFixed(2)
+                              : "0.00"}
                           </strong>
                         ) : (
                           // Display total fare when split payment is off
