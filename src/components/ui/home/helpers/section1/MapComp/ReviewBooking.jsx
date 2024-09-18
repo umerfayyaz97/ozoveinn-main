@@ -743,7 +743,7 @@ const ReviewBooking = ({ setComponent }) => {
       </div>
       <Link href={"/success"}>
         <button
-          onClick={handleSuccess}
+          // onClick={handleSuccess}
           // onClick={handleBookRideEmail}
           className="mt-4 lg:mt-0 w-full p-2 font-bold text-black bg-yellow-500 rounded-lg"
         >
