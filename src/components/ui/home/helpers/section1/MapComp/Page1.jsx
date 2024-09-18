@@ -631,9 +631,9 @@ const Page1 = ({ setComponent }) => {
                         </button>
 
                         {/* Split payment fee note */}
-                        <p className="text-xs mt-2 text-gray-500">
+                        {/* <p className="text-xs mt-2 text-gray-500">
                           A fee of $5 will be charged upfront.
-                        </p>
+                        </p> */}
                       </div>
                     )}
 
@@ -1268,9 +1268,9 @@ const Page1 = ({ setComponent }) => {
                     >
                       Confirm
                     </button>
-                    <p className="text-xs mt-2 text-gray-500">
+                    {/* <p className="text-xs mt-2 text-gray-500">
                       A fee of 5$ will be charged upfront.
-                    </p>
+                    </p> */}
                   </div>
                 )}
 
