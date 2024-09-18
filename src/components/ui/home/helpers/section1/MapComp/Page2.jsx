@@ -13,7 +13,10 @@ const Page2 = ({ setComponent }) => {
   const contact = useStore((state) => state.contact);
   const driverNote = useStore((state) => state.driverNote);
   const totalPrice = useStore((state) => state.totalPrice);
+  const splitPayment = useStore((state) => state.splitPayment);
+  // const splitPayment = useStore((state) => state.splitPayment); // Fetch splitPayment toggle state from Zustand
   const splitPaymentDetails = useStore((state) => state.splitPaymentDetails); // Fetch splitPaymentDetails from Zustand
+  // const splitPayment = useStore((state) => state.splitPayment); // Get the split payment toggle state
 
   const [showOccasions, setShowOccasions] = useState(false);
   const [error, setError] = useState("");
@@ -40,7 +43,7 @@ const Page2 = ({ setComponent }) => {
   const handleNextComponent = () => {
     if (
       !occasion ||
-      (passengers === 0 && !splitPaymentDetails.passengers) || // Check for passengers only if split option not selected
+      (!splitPayment && passengers === 0) || // Check passengers input only when split payment is off
       !contact.name ||
       !contact.phone ||
       !contact.email
@@ -57,26 +60,21 @@ const Page2 = ({ setComponent }) => {
 
   useEffect(() => {
     if (moveToFormStep2) {
-      // Set formStep to 2 after the component changes
       setFormStep(2);
-      setMoveToFormStep2(false); // Reset the flag
+      setMoveToFormStep2(false);
     }
   }, [moveToFormStep2]);
 
   return (
     <div className="lg:p-0 p-3">
-      <div className="w-full p-4 lg:h-[420px] lg:overflow-auto text-black bg-white shadow-lg rounded-lg border border-gray-300 lg:border-none">
-        {/* <button onClick={() => setComponent(1)} className="mb-4 text-gray-700">
-          <ArrowLeftIcon className="w-6 h-6" />
-        </button> */}
-
+      <div className="w-full p-4 lg:h-[460px] lg:overflow-auto text-black bg-white shadow-lg rounded-lg border border-gray-300 lg:border-none">
         <button
           onClick={() => {
             if (window.innerWidth < 1024) {
-              setComponent(1); // Navigate to Page 1
-              setMoveToFormStep2(true); // Set flag to trigger formStep 2
+              setComponent(1);
+              setMoveToFormStep2(true);
             } else {
-              setComponent(1); // On desktop, only move component
+              setComponent(1);
             }
           }}
           className="mb-4 text-gray-700"
@@ -121,14 +119,15 @@ const Page2 = ({ setComponent }) => {
           )}
         </div>
 
-        {/* Only show passengers input if split payment is not selected */}
-        {!splitPaymentDetails.passengers && (
+        {/* Only show the passenger input if the split payment toggle is OFF */}
+        {/* Show passenger input only if split payment is OFF */}
+        {!splitPayment && (
           <>
             <h2 className="mb-2 text-xl font-semibold text-gray-700">
               Specify Number of Passengers
             </h2>
             <p className="mb-2 text-sm">
-              Kindly specify number of people travelling
+              Kindly specify the number of people traveling
             </p>
             <div className="flex items-center mb-4 space-x-4">
               <button
@@ -189,14 +188,14 @@ const Page2 = ({ setComponent }) => {
           className="w-full p-2 mb-4 border border-gray-300 rounded"
         />
       </div>
-      <div className="">
+      <div>
         {error && <div className=" text-red-500 text-sm">{error}</div>}
-        <button className="p-2 mt-4 lg:mt-0 px-4 font-bold rounded-md text-black  bg-yellow-500/20 w-full">
+        {/* <button className="p-2 mt-4 lg:mt-0 px-4 font-bold rounded-md text-black  bg-yellow-500/20 w-full">
           Total Price: ${totalPrice.toFixed(2)}
-        </button>
+        </button> */}
         <button
           onClick={handleNextComponent}
-          className="w-full bg-yellow-500 text-black p-2 rounded-md font-bold"
+          className="w-full mt-4 lg:mt-0 bg-yellow-500 text-black p-2 rounded-md font-bold"
         >
           Next
         </button>

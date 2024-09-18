@@ -27,6 +27,7 @@ const useStore = create(
     luggageTrailerExtraAmount: 0, // Track the extra amount added for luggage trailers
     splitPaymentDetails: { passengers: 0 },
     orderNumber: "",
+    splitPayment: false,
     options: [
       { name: "Hourly Bookings", price: "$10" },
       { name: "Add More Vehicles", price: "$15" },
@@ -96,6 +97,7 @@ const useStore = create(
       set((state) => ({ ...state, splitPaymentDetails })),
     setOrderNumber: (orderNumber) =>
       set((state) => ({ ...state, orderNumber })),
+    setSplitPayment: (value) => set({ splitPayment: value }),
 
     calculateTotalPrice: () =>
       set((state) => {

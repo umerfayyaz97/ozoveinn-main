@@ -16,6 +16,7 @@ import {
   Calendar,
   Clock,
   ChevronDown,
+  Briefcase,
 } from "lucide-react";
 
 const Page1 = ({ setComponent }) => {
@@ -43,9 +44,9 @@ const Page1 = ({ setComponent }) => {
     setAdditionalOptions,
     setHourlyBookingCount,
     setAdditionalVehicleCount,
-    setSplitPaymentDetails,
-    setPassengers, // Set the number of passengers in Zustand
     calculateTotalPrice,
+    // setSplitPaymentDetails, // Function to update splitPaymentDetails in Zustand
+    setPassengers,
   } = useStore();
 
   const [showAllOptions, setShowAllOptions] = useState(false);
@@ -55,10 +56,15 @@ const Page1 = ({ setComponent }) => {
   const [isTimeSelected, setIsTimeSelected] = useState(false);
   const [confirmedOptions, setConfirmedOptions] = useState([]);
   const [splitPaymentOpen, setSplitPaymentOpen] = useState(false);
-  const [splitPayment, setSplitPayment] = useState(false); // Added splitPayment state
+  // const [splitPayment, setSplitPayment] = useState(false); // Added splitPayment state
   const [selectedPassengers, setSelectedPassengers] = useState(
     splitPaymentDetails.passengers || 1
   ); // Initial state from Zustand
+  const splitPayment = useStore((state) => state.splitPayment);
+  const setSplitPayment = useStore((state) => state.setSplitPayment);
+  const setSplitPaymentDetails = useStore(
+    (state) => state.setSplitPaymentDetails
+  );
 
   const options = [
     { name: "Hourly Bookings" },
@@ -69,33 +75,36 @@ const Page1 = ({ setComponent }) => {
   const vehicles = {
     smallVan: {
       name: "Van",
-      image: "/vehicles/Vito1.png",
-      passengerLimit: "8 Seater",
+      image: "/vehicles/van.png",
+      passengerLimit: "7 Seater",
       averageCostPerPerson: "$10",
       minimumPassengers: 4,
       cardDetails: "Mercedes-Benz V-Class or Similar",
       baseFare: 40,
       hourlyRate: 60,
+      luggageLimit: 6,
     },
     largeVan: {
       name: "Mini Bus",
       image: "/vehicles/2.png",
-      passengerLimit: "10 Seater",
+      passengerLimit: "9 Seater",
       averageCostPerPerson: "$22",
-      minimumPassengers: 2,
+      minimumPassengers: 6,
       cardDetails: "Toyota Hi- Ace or Similar",
       baseFare: 60,
       hourlyRate: 100,
+      luggageLimit: 8,
     },
     bus: {
       name: "Bus",
       image: "/vehicles/coaster.png",
       passengerLimit: "30 Seater",
       averageCostPerPerson: "$35",
-      minimumPassengers: 3,
+      minimumPassengers: 10,
       cardDetails: "Toyota Coaster or Similar",
       baseFare: 90,
       hourlyRate: 150,
+      luggageLimit: 30,
     },
   };
 
@@ -167,10 +176,9 @@ const Page1 = ({ setComponent }) => {
   };
 
   const handleSplitPaymentConfirm = () => {
-    setSplitPaymentDetails({ passengers: selectedPassengers });
-    setPassengers(selectedPassengers); // Set passengers globally via Zustand
-    handleConfirm("Split Payment");
-    setSplitPaymentOpen(false);
+    setSplitPaymentDetails({ passengers: selectedPassengers }); // Save passengers in Zustand
+    setPassengers(selectedPassengers); // Set passengers globally
+    setSplitPaymentOpen(false); // Close the split payment box
   };
 
   const dateInputRef = useRef(null);
@@ -328,12 +336,6 @@ const Page1 = ({ setComponent }) => {
                   <div className="mb-4 text-red-500 text-sm">{error}</div>
                 )}
 
-                {/* uncomment this when final launch */}
-                {/*
-                <button className="w-full bg-yellow-500/20 text-black p-2 rounded-md font-bold">
-                  Total Price: ${totalPrice.toFixed(2)}
-                </button> */}
-
                 <button
                   onClick={handleNextClick}
                   className="w-full bg-yellow-500 text-black rounded-md p-2 font-bold"
@@ -369,12 +371,6 @@ const Page1 = ({ setComponent }) => {
                   </>
                 )}
 
-                {/* <div className="mb-4">
-                  <p className="text-sm text-gray-700">
-                    {formattedDate || "No date selected"}
-                  </p>
-                  <p className="text-sm text-gray-700">{time}</p>
-                </div> */}
                 <p className="text-2xl font-bold text-gray-700 mb-4">
                   Select Date & Time
                 </p>
@@ -494,25 +490,36 @@ const Page1 = ({ setComponent }) => {
                     </p>
                     <div className="text-black">
                       <p className="flex items-center text-sm">
-                        <Tags
-                          className="mr-1 text-yellow-600"
-                          style={{
-                            width: "20px",
-                            height: "20px",
-                            transform: "scaleX(-1)",
-                          }}
-                        />
-                        <strong className="mr-1">
-                          {vehicleDetails.averageCostPerPerson}
-                        </strong>
-                        <span className="text-xxxs">Per Person</span>
+                        {/* Check if splitPayment is ON */}
+                        {splitPayment ? (
+                          // Calculate and display price per person when split payment is on
+                          <strong className="mr-1 text-yellow-500 text-xl">
+                            Price Per Person $
+                            {(
+                              totalPrice / splitPaymentDetails.passengers
+                            ).toFixed(2)}
+                          </strong>
+                        ) : (
+                          // Display total fare when split payment is off
+                          <strong className="mr-1 text-yellow-500 text-xl ">
+                            Total Fare ${totalPrice.toFixed(2)}
+                          </strong>
+                        )}
                       </p>
                       <p className="flex text-sm">
+                        {/* Passenger Limit */}
                         <UserRound
                           className="mr-1"
                           style={{ width: "16px", height: "16px" }}
                         />
                         <span>{vehicleDetails.passengerLimit}</span>
+                        {/* Vertical Divider */}
+                        <span className="mx-2">|</span>
+                        {/* Luggage Icon and Limit */}
+                        <Briefcase className="w-4 h-4" />
+                        <span className="ml-1 text-black">
+                          x {vehicleDetails.luggageLimit}
+                        </span>
                       </p>
                       <p className="flex items-center text-xs">
                         Minimum {vehicleDetails.minimumPassengers} Passengers
@@ -553,11 +560,11 @@ const Page1 = ({ setComponent }) => {
                         }`}
                         onClick={(e) => {
                           e.stopPropagation(); // Prevent box click from triggering
-                          setSplitPayment(!splitPayment); // Toggle split payment option
+                          setSplitPayment(!splitPayment); // Toggle split payment state globally
                           if (!splitPayment) {
-                            setSplitPaymentOpen(true); // Open the box if toggling on
+                            setSplitPaymentOpen(true); // Open if toggling on
                           } else {
-                            setSplitPaymentOpen(false); // Close the box if toggling off
+                            setSplitPaymentOpen(false); // Close if toggling off
                           }
                         }}
                       >
@@ -574,19 +581,20 @@ const Page1 = ({ setComponent }) => {
                       <div className="flex flex-col items-center mb-4">
                         <p className="text-sm">Select Passengers</p>
                         <div className="flex items-center mb-2 space-x-4">
+                          {/* Decrement button */}
                           <button
                             onClick={(e) => {
                               e.stopPropagation(); // Prevent box from closing
-                              handleDecrement(
-                                selectedPassengers,
-                                setSelectedPassengers
-                              );
+                              setSelectedPassengers(
+                                Math.max(1, selectedPassengers - 1)
+                              ); // Decrement passengers but ensure it doesn't go below 1
                             }}
                             className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-white rounded-full"
                           >
                             <Minus />
                           </button>
-                          <div className="border-2 border-yellow-500  rounded-md">
+                          {/* Passenger input field */}
+                          <div className="border-2 border-yellow-500 rounded-md">
                             <input
                               type="number"
                               value={selectedPassengers}
@@ -594,18 +602,16 @@ const Page1 = ({ setComponent }) => {
                                 e.stopPropagation(); // Prevent closing the box
                                 setSelectedPassengers(
                                   Math.max(1, parseInt(e.target.value) || 1)
-                                );
+                                ); // Ensure input is at least 1
                               }}
                               className="w-20 p-2 text-center rounded-md focus:outline-none"
                             />
                           </div>
+                          {/* Increment button */}
                           <button
                             onClick={(e) => {
                               e.stopPropagation(); // Prevent box from closing
-                              handleIncrement(
-                                selectedPassengers,
-                                setSelectedPassengers
-                              );
+                              setSelectedPassengers(selectedPassengers + 1); // Increment passengers count
                             }}
                             className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-yellow-500 rounded-full"
                           >
@@ -613,17 +619,20 @@ const Page1 = ({ setComponent }) => {
                           </button>
                         </div>
 
+                        {/* Confirm button */}
                         <button
                           onClick={(e) => {
                             e.stopPropagation(); // Prevent box from closing
-                            handleSplitPaymentConfirm(); // Save and confirm split payment
+                            handleSplitPaymentConfirm(); // Confirm and save the split payment selection
                           }}
                           className="mt-2 px-4 py-2 bg-yellow-500 text-black rounded-md w-full"
                         >
                           Confirm
                         </button>
+
+                        {/* Split payment fee note */}
                         <p className="text-xs mt-2 text-gray-500">
-                          A fee of 5$ will be charged upfront.
+                          A fee of $5 will be charged upfront.
                         </p>
                       </div>
                     )}
@@ -920,15 +929,16 @@ const Page1 = ({ setComponent }) => {
               </>
             )}
           </div>
+
           {formStep === 2 && (
             <>
               {error && <div className=" text-red-500 text-sm">{error}</div>}
-              <button className=" mt-4 w-full bg-yellow-500/20 text-black p-2 rounded-md font-bold">
+              {/* <button className=" mt-4 w-full bg-yellow-500/20 text-black p-2 rounded-md font-bold">
                 Total Price: ${totalPrice.toFixed(2)}
-              </button>
+              </button> */}
               <button
                 onClick={handleNextComponent}
-                className="w-full bg-yellow-500 text-black p-2 rounded-md font-bold"
+                className="w-full mt-4 bg-yellow-500 text-black p-2 rounded-md font-bold"
               >
                 Next
               </button>
@@ -938,7 +948,7 @@ const Page1 = ({ setComponent }) => {
 
         {/* Desktop View */}
         <div className="hidden lg:block  flex-1 ">
-          <div className=" p-4 overflow-auto h-[420px] bg-white border lg:border-none ">
+          <div className=" p-4 overflow-auto h-[460px] bg-white border lg:border-none ">
             <h2 className="text-2xl font-bold text-gray-700 mb-4">
               Ready to Book a Ride?
             </h2>
@@ -1115,25 +1125,36 @@ const Page1 = ({ setComponent }) => {
                 </p>
                 <div className="text-black">
                   <p className="flex items-center text-sm">
-                    <Tags
-                      className="mr-1 text-yellow-600"
-                      style={{
-                        width: "20px",
-                        height: "20px",
-                        transform: "scaleX(-1)",
-                      }}
-                    />
-                    <strong className="mr-1">
-                      {vehicleDetails.averageCostPerPerson}
-                    </strong>
-                    <span className="text-xxxs">Per Person</span>
+                    {/* Check if splitPayment is ON */}
+                    {splitPayment ? (
+                      // Calculate and display price per person when split payment is on
+                      <strong className="mr-1 text-yellow-500 text-xl">
+                        Price Per Person $
+                        {(totalPrice / splitPaymentDetails.passengers).toFixed(
+                          2
+                        )}
+                      </strong>
+                    ) : (
+                      // Display total fare when split payment is off
+                      <strong className="mr-1 text-yellow-500 text-xl ">
+                        Total Fare ${totalPrice.toFixed(2)}
+                      </strong>
+                    )}
                   </p>
                   <p className="flex text-sm">
+                    {/* Passenger Limit */}
                     <UserRound
                       className="mr-1"
                       style={{ width: "16px", height: "16px" }}
                     />
                     <span>{vehicleDetails.passengerLimit}</span>
+                    {/* Vertical Divider */}
+                    <span className="mx-2">|</span>
+                    {/* Luggage Icon and Limit */}
+                    <Briefcase className="w-4 h-4" />
+                    <span className="ml-1 text-black">
+                      x {vehicleDetails.luggageLimit}
+                    </span>
                   </p>
                   <p className="flex items-center text-xs">
                     Minimum {vehicleDetails.minimumPassengers} Passengers
@@ -1176,11 +1197,11 @@ const Page1 = ({ setComponent }) => {
                     }`}
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent box click from triggering
-                      setSplitPayment(!splitPayment); // Toggle split payment option
+                      setSplitPayment(!splitPayment); // Toggle split payment state globally
                       if (!splitPayment) {
-                        setSplitPaymentOpen(true); // Open the box if toggling on
+                        setSplitPaymentOpen(true); // Open if toggling on
                       } else {
-                        setSplitPaymentOpen(false); // Close the box if toggling off
+                        setSplitPaymentOpen(false); // Close if toggling off
                       }
                     }}
                   >
@@ -1537,13 +1558,13 @@ const Page1 = ({ setComponent }) => {
           </div>
           {error && <div className=" text-red-500 text-sm">{error}</div>}
 
-          <button className="w-full bg-yellow-500/20 text-black p-2 rounded-md font-bold">
+          {/* <button className="w-full bg-yellow-500/20 text-black p-2 rounded-md font-bold">
             Total Price: ${totalPrice.toFixed(2)}
-          </button>
+          </button> */}
 
           <button
             onClick={handleNextComponent}
-            className="w-full bg-yellow-500 text-black p-2 rounded-md font-bold"
+            className="w-full bg-yellow-500  text-black p-2 rounded-md font-bold"
           >
             Next
           </button>
