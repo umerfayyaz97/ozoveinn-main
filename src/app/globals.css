@@ -102,3 +102,16 @@ input[type="date"]::-ms-expand,
 input[type="time"]::-ms-expand {
   display: none;
 }
+
+
+/* Hides the arrows for number input in Chrome, Safari, Edge, and Opera */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hides the arrows for number input in Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}

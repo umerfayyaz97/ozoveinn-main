@@ -503,7 +503,7 @@ const Page1 = ({ setComponent }) => {
                         <strong className="mr-1 text-yellow-500 text-xl">
                           ${totalPrice.toFixed(2)}
                         </strong>
-                        <span className="text-gray-500 text-xl  line-through ml-2">
+                        <span className="text-gray-500 text-xl line-through ml-6">
                           {/* Add 15% to the total price */}$
                           {(totalPrice * 1.15).toFixed(2)}
                         </span>
@@ -1144,23 +1144,23 @@ const Page1 = ({ setComponent }) => {
                 </p>
                 <div className="text-black">
                   <p className="flex items-center text-sm">
-                    {/* Check if splitPayment is ON */}
-                    {splitPayment ? (
-                      // Check if passengers are confirmed and greater than 0, otherwise show $0
-                      <strong className="mr-1 text-yellow-500 text-xl">
-                        Price Per Person $
-                        {splitPaymentDetails.passengers > 0
-                          ? (
-                              totalPrice / splitPaymentDetails.passengers
-                            ).toFixed(2)
-                          : "0.00"}
-                      </strong>
-                    ) : (
-                      // Display total fare when split payment is off
-                      <strong className="mr-1 text-yellow-500 text-xl ">
-                        Total Fare ${totalPrice.toFixed(2)}
-                      </strong>
-                    )}
+                    {/* Tag Icon */}
+                    <Tags
+                      className="mr-1 text-yellow-600"
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                        transform: "scaleX(-1)",
+                      }}
+                    />
+                    {/* Show total price and discounted price */}
+                    <strong className="mr-1 text-yellow-500 text-xl">
+                      ${totalPrice.toFixed(2)}
+                    </strong>
+                    <span className="text-gray-500 text-xl line-through ml-6">
+                      {/* Add 15% to the total price */}$
+                      {(totalPrice * 1.15).toFixed(2)}
+                    </span>
                   </p>
                   <p className="flex text-sm">
                     {/* Passenger Limit */}
@@ -1251,8 +1251,8 @@ const Page1 = ({ setComponent }) => {
                       >
                         <Minus />
                       </button>
-                      {/* Input field with yellow border */}
-                      <div className="border-2 border-yellow-500  rounded-md">
+                      {/* Input field with yellow border, rounded and arrows disabled */}
+                      <div className="flex items-center justify-center border-2 border-yellow-500 rounded-full">
                         <input
                           type="number"
                           value={selectedPassengers}
@@ -1262,7 +1262,8 @@ const Page1 = ({ setComponent }) => {
                               Math.max(1, parseInt(e.target.value) || 1)
                             );
                           }}
-                          className="w-20 p-2 text-center rounded-md focus:outline-none"
+                          className="w-10 h-10 text-center bg-white rounded-full focus:outline-none appearance-none" // Disable arrows with appearance-none
+                          disabled // For Firefox
                         />
                       </div>
 
@@ -1423,20 +1424,22 @@ const Page1 = ({ setComponent }) => {
                                   >
                                     <Minus />
                                   </button>
-                                  <div className="border-2 border-yellow-500 rounded-md">
+                                  <div className="flex items-center justify-center border-2 border-yellow-500 rounded-full">
                                     <input
                                       type="number"
                                       value={hourlyBookingCount}
                                       min={3} // Set the minimum value to 3
-                                      onChange={(e) =>
-                                        setHourlyBookingCount(
-                                          Math.max(
-                                            3,
-                                            parseInt(e.target.value) || 3
+                                      onChange={
+                                        (e) =>
+                                          setHourlyBookingCount(
+                                            Math.max(
+                                              3,
+                                              parseInt(e.target.value) || 3
+                                            )
                                           ) // Ensure the value doesn't go below 3
-                                        )
                                       }
-                                      className="w-20 p-2 text-center rounded-md focus:outline-none"
+                                      className="w-10 h-10 text-center bg-white rounded-full focus:outline-none appearance-none" // Make it round and disable arrows
+                                      disabled // For Firefox
                                     />
                                   </div>
                                   <button
@@ -1494,7 +1497,7 @@ const Page1 = ({ setComponent }) => {
                                     <Minus />
                                   </button>
                                   {/* Input Field */}
-                                  <div className="border-2 border-yellow-500 rounded-md">
+                                  <div className="flex items-center justify-center border-2 border-yellow-500 rounded-full">
                                     <input
                                       type="number"
                                       value={additionalVehicleCount}
@@ -1511,7 +1514,8 @@ const Page1 = ({ setComponent }) => {
                                           )
                                         )
                                       }
-                                      className="w-20 p-2 text-center rounded-md focus:outline-none"
+                                      className="w-10 h-10 text-center bg-white rounded-full focus:outline-none appearance-none" // Use rounded-full for round input and appearance-none to disable arrows
+                                      disabled // Disable input
                                     />
                                   </div>
                                   {/* Increment Button */}

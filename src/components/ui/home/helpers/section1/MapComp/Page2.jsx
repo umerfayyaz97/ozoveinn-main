@@ -129,19 +129,24 @@ const Page2 = ({ setComponent }) => {
             <p className="mb-2 text-sm">
               Kindly specify the number of people traveling
             </p>
-            <div className="flex items-center mb-4 space-x-4">
+            <div className="flex items-center lg:ml-18 ml-[100px] mb-4 space-x-4">
+              {/* Decrement button */}
               <button
                 onClick={decrementPassengers}
                 className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-white rounded-full"
               >
                 <Minus />
               </button>
+
+              {/* Passenger input field with yellow border and round shape */}
               <input
                 type="number"
                 value={passengers}
                 onChange={handlePassengersChange}
-                className="w-20 p-2 text-center rounded"
+                className="w-10 h-10 p-2 text-center rounded-full focus:outline-none border-2 border-yellow-500" // Added yellow border and rounded shape
               />
+
+              {/* Increment button */}
               <button
                 onClick={incrementPassengers}
                 className="flex items-center justify-center w-10 h-10 text-black border-2 border-yellow-500 bg-yellow-500 rounded-full"
