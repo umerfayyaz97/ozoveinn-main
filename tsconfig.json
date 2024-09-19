@@ -21,6 +21,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/shares/Map.jsx", "src/app/api/create-checkout-session/route.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/shares/Map.jsx", "src/app/api/create-checkout-session/route.js", "src/app/api/send-email/route.js"],
   "exclude": ["node_modules"]
 }
