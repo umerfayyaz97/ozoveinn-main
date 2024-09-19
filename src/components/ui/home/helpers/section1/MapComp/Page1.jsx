@@ -1290,9 +1290,9 @@ const Page1 = ({ setComponent }) => {
                     >
                       Confirm
                     </button>
-                    {/* <p className="text-xs mt-2 text-gray-500">
-                      A fee of 5$ will be charged upfront.
-                    </p> */}
+                    <p className="text-xs mt-2 text-gray-500">
+                      Minimum 4 Passengers.
+                    </p>
                   </div>
                 )}
 
@@ -1311,6 +1311,19 @@ const Page1 = ({ setComponent }) => {
                     Selected)
                   </p>
                 )}
+                {/* Show per person cost below the selected passengers */}
+                {splitPayment &&
+                  !splitPaymentOpen &&
+                  selectedPassengers > 0 && (
+                    <p className="text-[12px] ml-2  text-yellow-500">
+                      Price Per Person: $
+                      {splitPaymentDetails.passengers > 0
+                        ? (totalPrice / splitPaymentDetails.passengers).toFixed(
+                            2
+                          )
+                        : "0.00"}
+                    </p>
+                  )}
               </div>
 
               {/* Additional Options (below Split Payment) */}
