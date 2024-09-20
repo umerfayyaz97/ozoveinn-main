@@ -130,31 +130,7 @@ const useStore = create(
         let additionalVehicleExtraAmount = 0;
         let luggageTrailerExtraAmount = 0;
 
-        // Handle additional vehicle pricing (extra amount)
-        if (state.additionalOptions.includes("Add More Vehicles")) {
-          additionalVehicleExtraAmount =
-            totalVehiclePrice * state.additionalVehicleCount;
-          totalVehiclePrice += additionalVehicleExtraAmount;
-        } else {
-          additionalVehicleExtraAmount = 0;
-          set((state) => ({ additionalVehicleCount: 0 }));
-        }
-
-        // Handle luggage trailer pricing based on vehicle type
-        if (state.additionalOptions.includes("Luggage Trailer")) {
-          if (
-            state.vehicleType === "smallVan" ||
-            state.vehicleType === "largeVan"
-          ) {
-            luggageTrailerExtraAmount = 20;
-          } else if (state.vehicleType === "bus") {
-            luggageTrailerExtraAmount = 30;
-          }
-          totalVehiclePrice += luggageTrailerExtraAmount;
-        } else {
-          luggageTrailerExtraAmount = 0;
-        }
-
+        // Calculate the additional options cost (excluding vehicles and luggage trailer, which are handled separately)
         const additionalOptionsCost = state.additionalOptions.reduce(
           (acc, option) => {
             const optionDetails = state.options.find(
@@ -179,7 +155,26 @@ const useStore = create(
           0
         );
 
-        const totalPrice = totalVehiclePrice + additionalOptionsCost;
+        // Add luggage trailer cost if selected
+        if (state.additionalOptions.includes("Luggage Trailer")) {
+          if (
+            state.vehicleType === "smallVan" ||
+            state.vehicleType === "largeVan"
+          ) {
+            luggageTrailerExtraAmount = 20;
+          } else if (state.vehicleType === "bus") {
+            luggageTrailerExtraAmount = 30;
+          }
+        }
+
+        // Calculate the total price for one vehicle, including additional options
+        let totalPrice =
+          totalVehiclePrice + additionalOptionsCost + luggageTrailerExtraAmount;
+
+        // If additional vehicles are selected, multiply the entire total price by the vehicle count (including the original one)
+        if (state.additionalOptions.includes("Add More Vehicles")) {
+          totalPrice *= state.additionalVehicleCount + 1; // Including the original vehicle
+        }
 
         return {
           ...state,

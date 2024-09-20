@@ -19,7 +19,7 @@ const Confirmed = () => {
         </h1>
         <CheckCircle className="w-24 h-24 text-yellow-500" strokeWidth={1} />
         <p className="mt-4 text-lg text-center text-gray-700">
-          Your booking has been submitted and a confirmation email will be sent.
+          Your booking has been submitted.
         </p>
         <button
           onClick={handleHomeClick}

@@ -5,7 +5,6 @@
 // import { ArrowLeftIcon, Phone, Mail, MapPin } from "lucide-react";
 // import { v4 as uuidv4 } from "uuid";
 // import { loadStripe } from "@stripe/stripe-js";
-// import Link from "next/link";
 
 // const stripePromise = loadStripe(
 //   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
@@ -33,14 +32,14 @@
 //     calculateTotalPrice,
 //     orderNumber,
 //     setOrderNumber,
-//     driverNote, // Now correctly using driverNote
-//     splitPaymentDetails, // Fetch split payment details from Zustand
+//     driverNote,
+//     splitPaymentDetails,
 //   } = useStore((state) => ({
 //     date: state.date,
 //     pickup: state.pickup,
 //     time: state.time,
 //     stop: state.stop,
-//     driverNote: state.driverNote, // Correctly fetching driverNote from Zustand
+//     driverNote: state.driverNote,
 //     destination: state.destination,
 //     vehicleDetails: state.vehicleDetails,
 //     occasion: state.occasion,
@@ -57,22 +56,20 @@
 //     calculateTotalPrice: state.calculateTotalPrice,
 //     orderNumber: state.orderNumber,
 //     setOrderNumber: state.setOrderNumber,
-//     splitPaymentDetails: state.splitPaymentDetails, // Fetch the split payment details
+//     splitPaymentDetails: state.splitPaymentDetails,
 //   }));
 
 //   useEffect(() => {
 //     calculateTotalPrice();
 
 //     if (!orderNumber) {
-//       // Generate the order number
 //       const generateOrderNumber = () => {
 //         const uuid = uuidv4();
 //         const chars = uuid
 //           .replace(/[^a-zA-Z0-9]/g, "")
 //           .slice(0, 4)
 //           .toUpperCase();
-//         const orderNum = `${chars[0]}${chars[1]}${chars[2]}${chars[3]}`;
-//         return orderNum;
+//         return `${chars[0]}${chars[1]}${chars[2]}${chars[3]}`;
 //       };
 
 //       const orderNum = generateOrderNumber();
@@ -101,7 +98,7 @@
 //     if (option === "Hourly Bookings") {
 //       return acc + vehicleDetails.hourlyRate * hourlyBookingCount;
 //     } else if (option === "Add More Vehicles") {
-//       return acc + 15 * additionalVehicleCount; // Assuming $15 per additional vehicle
+//       return acc + 15 * additionalVehicleCount;
 //     } else {
 //       const optionPrice =
 //         options.find((opt) => opt.name === option)?.price.replace("$", "") || 0;
@@ -109,11 +106,107 @@
 //     }
 //   }, 0);
 
-//   // Calculate price per person if split payment was selected
 //   const pricePerPerson =
 //     splitPaymentDetails?.passengers && splitPaymentDetails.passengers > 0
 //       ? (totalPrice / splitPaymentDetails.passengers).toFixed(2)
 //       : null;
+
+//   const handleBookRideEmail = async () => {
+//     try {
+//       const response = await fetch("/api/send-email", {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({
+//           orderNumber,
+//           date,
+//           time,
+//           pickup: pickup?.name || "N/A",
+//           destination: destination?.name || "N/A",
+//           vehicleDetails: vehicleDetails || "N/A",
+//           passengers: passengers || 1,
+//           totalPrice,
+//           contact: {
+//             name: contact?.name || "N/A",
+//             email: contact?.email || "N/A",
+//             phone: contact?.phone || "N/A",
+//           },
+//           driverNote: driverNote || "N/A",
+//           hourlyBookingCount: hourlyBookingCount || 0,
+//           additionalVehicleCount: additionalVehicleCount || 0,
+//           distanceStartToEnd: distanceStartToEnd || "N/A",
+//           distanceStartToStop: distanceStartToStop || "N/A",
+//           distanceStopToEnd: distanceStopToEnd || "N/A",
+//         }),
+//       });
+
+//       if (response.ok) {
+//         console.log("Email sent successfully");
+//       } else {
+//         console.error("Error sending email");
+//       }
+//     } catch (error) {
+//       console.error("Error during booking:", error);
+//     }
+//   };
+
+//   const handleConfirmBookingFullPayment = async () => {
+//     try {
+//       const bookingData = {
+//         orderNumber,
+//         date,
+//         time,
+//         pickup: pickup?.name || "N/A",
+//         destination: destination?.name || "N/A",
+//         vehicleName: vehicleDetails?.name || "N/A",
+//         passengers: passengers || 1,
+//         distanceToEnd: distanceStartToEnd || 0,
+//         additionalOptions,
+//         hourlyBookingCount,
+//         additionalVehicleCount,
+//         totalPrice,
+//         splitPaymentDetails,
+//         contact: {
+//           name: contact?.name || "N/A",
+//           email: contact?.email || "N/A",
+//           phone: contact?.phone || "N/A",
+//         },
+//         noteToDriver: driverNote || "N/A",
+//         occasion: occasion || "N/A",
+//       };
+
+//       const response = await fetch("/api/create-checkout-session", {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(bookingData),
+//       });
+
+//       if (response.ok) {
+//         const { sessionId } = await response.json();
+//         const stripe = await stripePromise;
+//         const { error } = await stripe.redirectToCheckout({ sessionId });
+
+//         if (error) {
+//           console.error("Stripe redirect error:", error);
+//           alert(
+//             "There was an error with the payment process. Please try again."
+//           );
+//         }
+//       } else {
+//         const errorText = await response.text();
+//         console.error("Error from server:", errorText);
+//         alert(
+//           "An error occurred while processing your booking. Please try again."
+//         );
+//       }
+//     } catch (error) {
+//       console.error("Error during booking confirmation:", error);
+//       alert("An unexpected error occurred. Please try again.");
+//     }
+//   };
 
 //   // // Prepare request data to send to backend
 //   // const requestData = {
@@ -247,7 +340,7 @@
 //           </div>
 //           {showCancellationDetails && (
 //             <div className="p-2 mt-2 rounded">
-//               <p className="text-xs">
+//               {/* <p className="text-xs">
 //                 Cancellations made seven days or less before a trip are not
 //                 eligible for a refund
 //                 <p>
@@ -261,6 +354,10 @@
 //                 <p>
 //                   - No refund: Cancellation is 7 or less days from trip date.
 //                 </p>
+//               </p> */}
+//               <p className="text-xs">
+//                 -<strong>20%</strong> refund: Cancellation is after the arrival
+//                 of driver.
 //               </p>
 //             </div>
 //           )}
@@ -345,15 +442,24 @@
 //           terms and conditions
 //         </p>
 //       </div>
-//       <Link href={"/success"}>
-//         <button
-//           // onClick={handleSuccess}
-//           // onClick={handleBookRide}
-//           className="mt-4 lg:mt-0 w-full p-2 font-bold text-black bg-yellow-500 rounded-lg"
-//         >
-//           Book Ride
-//         </button>
-//       </Link>
+
+//       <button
+//         onClick={async () => {
+//           try {
+//             // Run both functions simultaneously
+//             await Promise.all([
+//               handleBookRideEmail(),
+//               handleConfirmBookingFullPayment(),
+//             ]);
+//           } catch (error) {
+//             console.error("An error occurred:", error);
+//             alert("An unexpected error occurred. Please try again.");
+//           }
+//         }}
+//         className="mt-4 lg:mt-0 w-full p-2 font-bold text-black bg-yellow-500 rounded-lg"
+//       >
+//         Book Ride
+//       </button>
 //     </div>
 //   );
 // };
@@ -367,7 +473,6 @@ import Image from "next/image";
 import { ArrowLeftIcon, Phone, Mail, MapPin } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { loadStripe } from "@stripe/stripe-js";
-import Link from "next/link";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
@@ -395,14 +500,14 @@ const ReviewBooking = ({ setComponent }) => {
     calculateTotalPrice,
     orderNumber,
     setOrderNumber,
-    driverNote, // Now correctly using driverNote
-    splitPaymentDetails, // Fetch split payment details from Zustand
+    driverNote,
+    splitPaymentDetails,
   } = useStore((state) => ({
     date: state.date,
     pickup: state.pickup,
     time: state.time,
     stop: state.stop,
-    driverNote: state.driverNote, // Correctly fetching driverNote from Zustand
+    driverNote: state.driverNote,
     destination: state.destination,
     vehicleDetails: state.vehicleDetails,
     occasion: state.occasion,
@@ -419,22 +524,20 @@ const ReviewBooking = ({ setComponent }) => {
     calculateTotalPrice: state.calculateTotalPrice,
     orderNumber: state.orderNumber,
     setOrderNumber: state.setOrderNumber,
-    splitPaymentDetails: state.splitPaymentDetails, // Fetch the split payment details
+    splitPaymentDetails: state.splitPaymentDetails,
   }));
 
   useEffect(() => {
     calculateTotalPrice();
 
     if (!orderNumber) {
-      // Generate the order number
       const generateOrderNumber = () => {
         const uuid = uuidv4();
         const chars = uuid
           .replace(/[^a-zA-Z0-9]/g, "")
           .slice(0, 4)
           .toUpperCase();
-        const orderNum = `${chars[0]}${chars[1]}${chars[2]}${chars[3]}`;
-        return orderNum;
+        return `${chars[0]}${chars[1]}${chars[2]}${chars[3]}`;
       };
 
       const orderNum = generateOrderNumber();
@@ -453,100 +556,46 @@ const ReviewBooking = ({ setComponent }) => {
     setOrderNumber,
   ]);
 
+  // Define the missing state variable for cancellation details
   const [showCancellationDetails, setShowCancellationDetails] = useState(false);
 
-  const toggleCancellationDetails = () => {
-    setShowCancellationDetails(!showCancellationDetails);
+  const [showPhone, setShowPhone] = useState(false);
+  const [showEmail, setShowEmail] = useState(false);
+
+  // Hide phone and email when clicked outside
+  const handleOutsideClick = (event) => {
+    if (!event.target.closest(".contact-button")) {
+      setShowPhone(false);
+      setShowEmail(false);
+    }
   };
 
-  const additionalOptionsTotal = additionalOptions.reduce((acc, option) => {
-    if (option === "Hourly Bookings") {
-      return acc + vehicleDetails.hourlyRate * hourlyBookingCount;
-    } else if (option === "Add More Vehicles") {
-      return acc + 15 * additionalVehicleCount; // Assuming $15 per additional vehicle
-    } else {
-      const optionPrice =
-        options.find((opt) => opt.name === option)?.price.replace("$", "") || 0;
-      return acc + parseFloat(optionPrice);
-    }
-  }, 0);
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
 
-  // Calculate price per person if split payment was selected
-  const pricePerPerson =
-    splitPaymentDetails?.passengers && splitPaymentDetails.passengers > 0
-      ? (totalPrice / splitPaymentDetails.passengers).toFixed(2)
-      : null;
+  const handleTogglePhone = () => {
+    setShowPhone(!showPhone);
+    setShowEmail(false); // Hide email if phone is clicked
+  };
 
-  // // Prepare request data to send to backend
-  // const requestData = {
-  //   orderNumber,
-  //   date,
-  //   time,
-  //   pickup: pickup?.name || "N/A",
-  //   destination: destination?.name || "N/A",
-  //   vehicleName: vehicleDetails?.name || "N/A",
-  //   passengers: passengers || 1, // Set default if passengers is not defined
-  //   totalPrice,
-  //   contact: {
-  //     name: contact?.name || "N/A",
-  //     email: contact?.email || "N/A",
-  //     phone: contact?.phone || "N/A",
-  //   },
-  // };
+  const handleToggleEmail = () => {
+    setShowEmail(!showEmail);
+    setShowPhone(false); // Hide phone if email is clicked
+  };
 
-  // // Stripe function
-  // const handleBookRide = async () => {
-  //   try {
-  //     const response = await fetch("/api/create-payment-intent", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         orderNumber,
-  //         date,
-  //         time,
-  //         pickup: pickup?.name || "N/A",
-  //         destination: destination?.name || "N/A",
-  //         vehicleName: vehicleDetails?.name || "N/A",
-  //         passengers: passengers || 1,
-  //         totalPrice, // The full amount (e.g., $100)
-  //         contact: {
-  //           name: contact?.name || "N/A",
-  //           email: contact?.email || "N/A",
-  //           phone: contact?.phone || "N/A",
-  //         },
-  //       }),
-  //     });
-
-  //     if (!response.ok) {
-  //       const errorText = await response.text();
-  //       console.error("Error from server:", errorText);
-  //       alert(
-  //         "An error occurred while processing your request. Please try again."
-  //       );
-  //       return;
-  //     }
-
-  //     const { sessionId } = await response.json();
-
-  //     // Redirect to Stripe Checkout
-  //     const stripe = await stripePromise;
-  //     const { error } = await stripe.redirectToCheckout({ sessionId });
-
-  //     if (error) {
-  //       console.error("Stripe redirect error:", error);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error during booking:", error);
-  //     alert("An unexpected error occurred. Please try again.");
-  //   }
-  // };
+  const toggleCancellationDetails = () => {
+    setShowCancellationDetails(!showCancellationDetails); // Toggles the cancellation details
+  };
 
   const handleBookRideEmail = async () => {
+    // Example of sending booking data via email
     try {
       const response = await fetch("/api/send-email", {
-        method: "POST", // Make sure method is POST
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -564,6 +613,12 @@ const ReviewBooking = ({ setComponent }) => {
             email: contact?.email || "N/A",
             phone: contact?.phone || "N/A",
           },
+          driverNote: driverNote || "N/A",
+          hourlyBookingCount: hourlyBookingCount || 0,
+          additionalVehicleCount: additionalVehicleCount || 0,
+          distanceStartToEnd: distanceStartToEnd || "N/A",
+          distanceStartToStop: distanceStartToStop || "N/A",
+          distanceStopToEnd: distanceStopToEnd || "N/A",
         }),
       });
 
@@ -576,6 +631,82 @@ const ReviewBooking = ({ setComponent }) => {
       console.error("Error during booking:", error);
     }
   };
+
+  const handleConfirmBookingFullPayment = async () => {
+    try {
+      const bookingData = {
+        orderNumber,
+        date,
+        time,
+        pickup: pickup?.name || "N/A",
+        destination: destination?.name || "N/A",
+        vehicleName: vehicleDetails?.name || "N/A",
+        passengers: passengers || 1,
+        distanceToEnd: distanceStartToEnd || 0,
+        additionalOptions,
+        hourlyBookingCount,
+        additionalVehicleCount,
+        totalPrice,
+        splitPaymentDetails,
+        contact: {
+          name: contact?.name || "N/A",
+          email: contact?.email || "N/A",
+          phone: contact?.phone || "N/A",
+        },
+        noteToDriver: driverNote || "N/A",
+        occasion: occasion || "N/A",
+      };
+
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      if (response.ok) {
+        const { sessionId } = await response.json();
+        const stripe = await stripePromise;
+        const { error } = await stripe.redirectToCheckout({ sessionId });
+
+        if (error) {
+          console.error("Stripe redirect error:", error);
+          alert(
+            "There was an error with the payment process. Please try again."
+          );
+        }
+      } else {
+        const errorText = await response.text();
+        console.error("Error from server:", errorText);
+        alert(
+          "An error occurred while processing your booking. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("Error during booking confirmation:", error);
+      alert("An unexpected error occurred. Please try again.");
+    }
+  };
+
+  // Calculate additional options total
+  const additionalOptionsTotal = additionalOptions.reduce((acc, option) => {
+    if (option === "Hourly Bookings") {
+      return acc + vehicleDetails.hourlyRate * hourlyBookingCount;
+    } else if (option === "Add More Vehicles") {
+      return acc + 15 * additionalVehicleCount;
+    } else {
+      const optionPrice =
+        options.find((opt) => opt.name === option)?.price.replace("$", "") || 0;
+      return acc + parseFloat(optionPrice);
+    }
+  }, 0);
+
+  // Calculate price per person if split payment details are provided
+  const pricePerPerson =
+    splitPaymentDetails?.passengers && splitPaymentDetails.passengers > 0
+      ? (totalPrice / splitPaymentDetails.passengers).toFixed(2)
+      : null;
 
   return (
     <div className="lg:p-0 p-3">
@@ -623,6 +754,8 @@ const ReviewBooking = ({ setComponent }) => {
             </p>
           </div>
         </div>
+
+        {/* Cancellation Policy Section */}
         <div className="p-2 mb-4 rounded bg-yellow-500/20">
           <div className="flex items-center justify-between">
             <div>
@@ -644,23 +777,13 @@ const ReviewBooking = ({ setComponent }) => {
           {showCancellationDetails && (
             <div className="p-2 mt-2 rounded">
               <p className="text-xs">
-                Cancellations made seven days or less before a trip are not
-                eligible for a refund
-                <p>
-                  - 100% refund: Cancellation is at least 30 days before trip
-                  date.
-                </p>
-                <p>
-                  - 50% refund: Cancellation is between 29 and 8 days before
-                  trip date.
-                </p>
-                <p>
-                  - No refund: Cancellation is 7 or less days from trip date.
-                </p>
+                -<strong>20%</strong> refund: Cancellation is after the arrival
+                of driver.
               </p>
             </div>
           )}
         </div>
+
         <hr className="mb-4" />
         <div className="mb-4">
           <h2 className="font-semibold text-gray-700">Occasion</h2>
@@ -717,7 +840,8 @@ const ReviewBooking = ({ setComponent }) => {
             </div>
           </div>
         </div>
-        <hr className="mb-4" />
+
+        {/* Contact Us Section */}
         <div className="p-2 mb-4 border border-yellow-500 rounded">
           <div className="flex items-center justify-between">
             <div>
@@ -727,29 +851,57 @@ const ReviewBooking = ({ setComponent }) => {
               <p className="mb-2 text-xs">Feel free to contact us</p>
             </div>
             <div className="flex space-x-2">
-              <button className="flex items-center justify-center h-6 px-2 text-xs text-black bg-yellow-500 rounded-full">
-                <Phone style={{ width: "12px", height: "12px" }} />
+              {/* Phone Button */}
+              <button
+                className="contact-button flex items-center justify-center h-8 px-3 text-sm text-black bg-yellow-500 rounded-full"
+                onClick={handleTogglePhone}
+              >
+                <Phone style={{ width: "16px", height: "16px" }} />
+                {showPhone && (
+                  <span className="ml-2 text-xs text-gray-800">
+                    +61481722473
+                  </span>
+                )}
               </button>
-              <button className="flex items-center justify-center h-6 px-2 text-xs text-black bg-yellow-500 rounded-full">
-                <Mail style={{ width: "12px", height: "12px" }} />
+
+              {/* Email Button */}
+              <button
+                className="contact-button flex items-center justify-center h-8 px-3 text-sm text-black bg-yellow-500 rounded-full"
+                onClick={handleToggleEmail}
+              >
+                <Mail style={{ width: "16px", height: "16px" }} />
+                {showEmail && (
+                  <span className="ml-2 text-xs text-gray-800">
+                    admin@ozove.com.au
+                  </span>
+                )}
               </button>
             </div>
           </div>
         </div>
+
         <p className="mb-4 text-xs">
           By selecting Book Ride, you agree to our Cancellation policy and Ozove
           terms and conditions
         </p>
       </div>
-      <Link href={"/success"}>
-        <button
-          // onClick={handleSuccess}
-          // onClick={handleBookRideEmail}
-          className="mt-4 lg:mt-0 w-full p-2 font-bold text-black bg-yellow-500 rounded-lg"
-        >
-          Book Ride
-        </button>
-      </Link>
+
+      <button
+        onClick={async () => {
+          try {
+            await Promise.all([
+              handleBookRideEmail(),
+              handleConfirmBookingFullPayment(),
+            ]);
+          } catch (error) {
+            console.error("An error occurred:", error);
+            alert("An unexpected error occurred. Please try again.");
+          }
+        }}
+        className="mt-4 lg:mt-0 w-full p-2 font-bold text-black bg-yellow-500 rounded-lg"
+      >
+        Book Ride
+      </button>
     </div>
   );
 };
