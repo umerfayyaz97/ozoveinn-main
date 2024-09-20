@@ -47,7 +47,12 @@ const Page1 = ({ setComponent }) => {
     calculateTotalPrice,
     // setSplitPaymentDetails, // Function to update splitPaymentDetails in Zustand
     setPassengers,
+    distanceStartToEnd,
   } = useStore();
+
+  const formattedDistance = distanceStartToEnd
+    ? distanceStartToEnd.toFixed(2)
+    : "0.00";
 
   const [showAllOptions, setShowAllOptions] = useState(false);
   // const [formStep, setFormStep] = useState(1);
@@ -523,8 +528,8 @@ const Page1 = ({ setComponent }) => {
                           x {vehicleDetails.luggageLimit}
                         </span>
                       </p>
-                      <p className="flex items-center text-xs">
-                        Minimum {vehicleDetails.minimumPassengers} Passengers
+                      <p className="flex items-center text-base">
+                        Distance For Trip: {formattedDistance} km
                         <Info
                           className="ml-1 text-sm text-yellow-600"
                           style={{ width: "0.8em", height: "0.8em" }}
@@ -1177,8 +1182,8 @@ const Page1 = ({ setComponent }) => {
                       x {vehicleDetails.luggageLimit}
                     </span>
                   </p>
-                  <p className="flex items-center text-xs">
-                    Minimum {vehicleDetails.minimumPassengers} Passengers
+                  <p className="flex items-center text-base">
+                    Distance For Trip: {formattedDistance} km
                     <Info
                       className="ml-1 text-sm text-yellow-600"
                       style={{ width: "0.8em", height: "0.8em" }}
