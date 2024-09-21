@@ -754,7 +754,6 @@ const ReviewBooking = ({ setComponent }) => {
             </p>
           </div>
         </div>
-
         {/* Cancellation Policy Section */}
         <div className="p-2 mb-4 rounded bg-yellow-500/20">
           <div className="flex items-center justify-between">
@@ -783,7 +782,6 @@ const ReviewBooking = ({ setComponent }) => {
             </div>
           )}
         </div>
-
         <hr className="mb-4" />
         <div className="mb-4">
           <h2 className="font-semibold text-gray-700">Occasion</h2>
@@ -840,7 +838,6 @@ const ReviewBooking = ({ setComponent }) => {
             </div>
           </div>
         </div>
-
         {/* Contact Us Section */}
         <div className="p-2 mb-4 border border-yellow-500 rounded">
           <div className="flex items-center justify-between">
@@ -852,30 +849,26 @@ const ReviewBooking = ({ setComponent }) => {
             </div>
             <div className="flex space-x-2">
               {/* Phone Button */}
-              <button
+              <a
+                href="tel:+61481722473"
                 className="contact-button flex items-center justify-center h-8 px-3 text-sm text-black bg-yellow-500 rounded-full"
-                onClick={handleTogglePhone}
               >
                 <Phone style={{ width: "16px", height: "16px" }} />
-                {showPhone && (
-                  <span className="ml-2 text-xs text-gray-800">
-                    +61481722473
-                  </span>
-                )}
-              </button>
+                <span className="ml-2 text-xs text-gray-800 hidden md:inline">
+                  +61481722473
+                </span>
+              </a>
 
               {/* Email Button */}
-              <button
+              <a
+                href="mailto:admin@ozove.com.au"
                 className="contact-button flex items-center justify-center h-8 px-3 text-sm text-black bg-yellow-500 rounded-full"
-                onClick={handleToggleEmail}
               >
                 <Mail style={{ width: "16px", height: "16px" }} />
-                {showEmail && (
-                  <span className="ml-2 text-xs text-gray-800">
-                    admin@ozove.com.au
-                  </span>
-                )}
-              </button>
+                <span className="ml-2 text-xs text-gray-800 hidden md:inline">
+                  admin@ozove.com.au
+                </span>
+              </a>
             </div>
           </div>
         </div>
