@@ -852,22 +852,28 @@ const ReviewBooking = ({ setComponent }) => {
               <a
                 href="tel:+61481722473"
                 className="contact-button flex items-center justify-center h-8 px-3 text-sm text-black bg-yellow-500 rounded-full"
+                onClick={handleTogglePhone}
               >
                 <Phone style={{ width: "16px", height: "16px" }} />
-                <span className="ml-2 text-xs text-gray-800 hidden md:inline">
-                  +61481722473
-                </span>
+                {showPhone && (
+                  <span className="ml-2 text-xs text-gray-800">
+                    +61481722473
+                  </span>
+                )}
               </a>
 
               {/* Email Button */}
               <a
                 href="mailto:admin@ozove.com.au"
                 className="contact-button flex items-center justify-center h-8 px-3 text-sm text-black bg-yellow-500 rounded-full"
+                onClick={handleToggleEmail}
               >
                 <Mail style={{ width: "16px", height: "16px" }} />
-                <span className="ml-2 text-xs text-gray-800 hidden md:inline">
-                  admin@ozove.com.au
-                </span>
+                {showEmail && (
+                  <span className="ml-2 text-xs text-gray-800">
+                    admin@ozove.com.au
+                  </span>
+                )}
               </a>
             </div>
           </div>
