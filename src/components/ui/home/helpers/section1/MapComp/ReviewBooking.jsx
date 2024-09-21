@@ -474,9 +474,7 @@ import { ArrowLeftIcon, Phone, Mail, MapPin } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { loadStripe } from "@stripe/stripe-js";
 
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-);
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
 const ReviewBooking = ({ setComponent }) => {
   const {
