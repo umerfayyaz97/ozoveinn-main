@@ -776,7 +776,7 @@ const ReviewBooking = ({ setComponent }) => {
           {showCancellationDetails && (
             <div className="p-2 mt-2 rounded">
               <p className="text-xs">
-                -<strong>20%</strong> refund: Cancellation is after the arrival
+                -<strong>80%</strong> refund: Cancellation is after the arrival
                 of driver.
               </p>
             </div>

@@ -202,7 +202,7 @@ const Page1 = ({ setComponent }) => {
             {
               params: {
                 access_token:
-                  "pk.eyJ1IjoidGFydW4yNTA2IiwiYSI6ImNsaDdwbzlvZTAwdWkzcW8xM3Bib3k4bzIifQ.KY0XQwjRpgkn7KYvdaXDbQ",
+                  "pk.eyJ1IjoicnZlcm1iaXQiLCJhIjoiY20xYm9seHQ4MHQ2NTJrc2JrY2JlNWN1YSJ9.d37-XPV0xMZoYPa-YlioqA",
                 geometries: "geojson",
               },
             }
@@ -477,7 +477,8 @@ const Page1 = ({ setComponent }) => {
                         {vehicles[type].passengerLimit}
                       </p>
                       <p className="text-sm font-bold text-black">
-                        <span>From ${vehicles[type].baseFare}</span>
+                        <span className="text-green-500">From</span> $
+                        {vehicles[type].baseFare}
                       </p>
                     </button>
                   ))}
@@ -505,7 +506,10 @@ const Page1 = ({ setComponent }) => {
                           }}
                         />
                         {/* Show total price and discounted price */}
-                        <strong className="mr-1 text-yellow-500 text-xl">
+                        <strong
+                          className="mr-1 text-yellow-600 text-xl "
+                          // style={{ fontWeight: "bold" }}
+                        >
                           ${totalPrice.toFixed(2)}
                         </strong>
                         <span className="text-gray-500 text-xl line-through ml-6">
@@ -529,7 +533,7 @@ const Page1 = ({ setComponent }) => {
                         </span>
                       </p>
                       <p className="flex items-center text-base">
-                        Distance For Trip: {formattedDistance} km
+                        Total Distance: {formattedDistance} km
                         <Info
                           className="ml-1 text-sm text-yellow-600"
                           style={{ width: "0.8em", height: "0.8em" }}
@@ -1131,7 +1135,8 @@ const Page1 = ({ setComponent }) => {
                     {vehicles[type].passengerLimit}
                   </p>
                   <p className="text-sm font-bold text-black">
-                    <span>From ${vehicles[type].baseFare}</span>
+                    <span className="text-green-500">From</span> $
+                    {vehicles[type].baseFare}
                   </p>
                 </button>
               ))}
@@ -1159,7 +1164,7 @@ const Page1 = ({ setComponent }) => {
                       }}
                     />
                     {/* Show total price and discounted price */}
-                    <strong className="mr-1 text-yellow-500 text-xl">
+                    <strong className="mr-1 text-yellow-600 font-bold text-xl">
                       ${totalPrice.toFixed(2)}
                     </strong>
                     <span className="text-gray-500 text-xl line-through ml-6">
@@ -1183,7 +1188,7 @@ const Page1 = ({ setComponent }) => {
                     </span>
                   </p>
                   <p className="flex items-center text-base">
-                    Distance For Trip: {formattedDistance} km
+                    Total Distance: {formattedDistance} km
                     <Info
                       className="ml-1 text-sm text-yellow-600"
                       style={{ width: "0.8em", height: "0.8em" }}
