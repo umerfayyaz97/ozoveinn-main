@@ -5,7 +5,11 @@ import Image from "next/image";
 import { ArrowLeftIcon, Phone, Mail, MapPin } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { loadStripe } from "@stripe/stripe-js";
-import { sendEmail, createCheckoutSession } from "@/app/api/awsGateway/route";
+// import { sendEmail, createCheckoutSession } from "@/app/api/awsGateway/route";
+import {
+  sendEmail,
+  createCheckoutSession,
+} from "src/app/api/awsGateway/route.js";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
