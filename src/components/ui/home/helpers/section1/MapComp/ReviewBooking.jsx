@@ -617,7 +617,7 @@ const ReviewBooking = ({ setComponent }) => {
         time,
         pickup: pickup?.name || "N/A",
         destination: destination?.name || "N/A",
-        vehicleDetails: vehicleDetails?.name || "N/A", // Ensure vehicle details are passed correctly
+        vehicleName: vehicleDetails?.name || "N/A", // Ensure vehicle details are passed correctly
         passengers: passengers || 1,
         totalPrice,
         contact: {
