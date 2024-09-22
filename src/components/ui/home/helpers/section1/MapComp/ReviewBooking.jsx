@@ -133,7 +133,7 @@ const ReviewBooking = ({ setComponent }) => {
         time,
         pickup: pickup?.name || "N/A",
         destination: destination?.name || "N/A",
-        vehicleName: vehicleDetails?.name || "N/A", // Ensure vehicle details are passed correctly
+        vehicleName: vehicleDetails?.name || "N/A",
         passengers: passengers || 1,
         totalPrice,
         contact: {
@@ -141,6 +141,8 @@ const ReviewBooking = ({ setComponent }) => {
           email: contact?.email || "N/A",
           phone: contact?.phone || "N/A",
         },
+        additionalOptions: additionalOptions?.length ? additionalOptions : [],
+        occasion: occasion || "N/A", // Add occasion here
         splitPaymentDetails: splitPaymentDetails || "N/A",
         driverNote: driverNote || "N/A",
         hourlyBookingCount: hourlyBookingCount || 0,
