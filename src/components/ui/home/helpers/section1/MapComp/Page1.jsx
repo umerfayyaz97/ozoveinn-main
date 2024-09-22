@@ -741,6 +741,35 @@ const Page1 = ({ setComponent }) => {
                                   : `$${vehicleDetails.hourlyRate || 0}.00`
                                 : option.name === "Add More Vehicles"
                                 ? confirmedOptions.includes("Add More Vehicles")
+                                  ? additionalVehicleCount >= 1
+                                    ? `$${(
+                                        (totalPrice * additionalVehicleCount) /
+                                        (additionalVehicleCount + 1)
+                                      ).toFixed(2)}`
+                                    : "$0.00"
+                                  : "$0.00"
+                                : option.name === "Luggage Trailer"
+                                ? additionalOptions.includes("Luggage Trailer")
+                                  ? `$${(
+                                      luggageTrailerExtraAmount || 0
+                                    ).toFixed(2)}`
+                                  : "$0.00"
+                                : option.price
+                                ? `$${option.price.toFixed(2)}`
+                                : "10.00$"}
+                            </span>
+
+                            {/* <span className="text-sm text-black font-bold">
+                              {option.name === "Hourly Bookings" &&
+                              vehicleDetails
+                                ? confirmedOptions.includes("Hourly Bookings")
+                                  ? `$${(
+                                      hourlyBookingCount *
+                                      (vehicleDetails.hourlyRate || 0)
+                                    ).toFixed(2)}`
+                                  : `$${vehicleDetails.hourlyRate || 0}.00`
+                                : option.name === "Add More Vehicles"
+                                ? confirmedOptions.includes("Add More Vehicles")
                                   ? `$${(
                                       additionalVehicleExtraAmount || 0
                                     ).toFixed(2)}`
@@ -754,7 +783,7 @@ const Page1 = ({ setComponent }) => {
                                 : option.price
                                 ? `$${option.price.toFixed(2)}`
                                 : "10.00$"}
-                            </span>
+                            </span> */}
                           </div>
 
                           {/* Subheading for Hourly Bookings */}
@@ -1393,15 +1422,18 @@ const Page1 = ({ setComponent }) => {
                               : `$${vehicleDetails.hourlyRate || 0}.00`
                             : option.name === "Add More Vehicles"
                             ? confirmedOptions.includes("Add More Vehicles")
-                              ? `$${(additionalVehicleExtraAmount || 0).toFixed(
-                                  2
-                                )}`
+                              ? additionalVehicleCount >= 1
+                                ? `$${(
+                                    (totalPrice * additionalVehicleCount) /
+                                    (additionalVehicleCount + 1)
+                                  ).toFixed(2)}`
+                                : "$0.00"
                               : "$0.00"
                             : option.name === "Luggage Trailer"
-                            ? additionalOptions.includes("Luggage Trailer") // Check if Luggage Trailer is selected
+                            ? additionalOptions.includes("Luggage Trailer")
                               ? `$${(luggageTrailerExtraAmount || 0).toFixed(
                                   2
-                                )}` // Display luggage trailer amount
+                                )}`
                               : "$0.00"
                             : option.price
                             ? `$${option.price.toFixed(2)}`
