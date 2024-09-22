@@ -15,7 +15,7 @@
     "@mapbox/mapbox-gl-geocoder": "^5.0.2",
     "@mapbox/mapbox-sdk": "^0.16.0",
     "@next/font": "^14.2.5",
-    "@stripe/stripe-js": "^4.4.0",
+    "@stripe/stripe-js": "^4.5.0",
     "axios": "^1.7.2",
     "canvas-confetti": "^1.9.3",
     "googleapis": "^144.0.0",

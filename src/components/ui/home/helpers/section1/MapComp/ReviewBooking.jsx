@@ -5,8 +5,11 @@ import Image from "next/image";
 import { ArrowLeftIcon, Phone, Mail, MapPin } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { loadStripe } from "@stripe/stripe-js";
+import { sendEmail, createCheckoutSession } from "@/app/api/awsGateway/route";
 
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
 
 const ReviewBooking = ({ setComponent }) => {
   const {
@@ -121,103 +124,144 @@ const ReviewBooking = ({ setComponent }) => {
     setShowCancellationDetails(!showCancellationDetails); // Toggles the cancellation details
   };
 
-  const handleBookRideEmail = async () => {
-    // Example of sending booking data via email
+  const handleBookRide = async () => {
     try {
-      const response = await fetch("/api/send-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          orderNumber,
-          date,
-          time,
-          pickup: pickup?.name || "N/A",
-          destination: destination?.name || "N/A",
-          vehicleDetails: vehicleDetails || "N/A",
-          passengers: passengers || 1,
-          totalPrice,
-          contact: {
-            name: contact?.name || "N/A",
-            email: contact?.email || "N/A",
-            phone: contact?.phone || "N/A",
-          },
-          driverNote: driverNote || "N/A",
-          hourlyBookingCount: hourlyBookingCount || 0,
-          additionalVehicleCount: additionalVehicleCount || 0,
-          distanceStartToEnd: distanceStartToEnd || "N/A",
-          distanceStartToStop: distanceStartToStop || "N/A",
-          distanceStopToEnd: distanceStopToEnd || "N/A",
-        }),
-      });
-
-      if (response.ok) {
-        console.log("Email sent successfully");
-      } else {
-        console.error("Error sending email");
-      }
-    } catch (error) {
-      console.error("Error during booking:", error);
-    }
-  };
-
-  const handleConfirmBookingFullPayment = async () => {
-    try {
+      // Gather all necessary data from your form or state
       const bookingData = {
         orderNumber,
         date,
         time,
         pickup: pickup?.name || "N/A",
         destination: destination?.name || "N/A",
-        vehicleName: vehicleDetails?.name || "N/A",
+        vehicleDetails: vehicleDetails || "N/A",
         passengers: passengers || 1,
-        distanceToEnd: distanceStartToEnd || 0,
-        additionalOptions,
-        hourlyBookingCount,
-        additionalVehicleCount,
         totalPrice,
-        splitPaymentDetails,
         contact: {
           name: contact?.name || "N/A",
           email: contact?.email || "N/A",
           phone: contact?.phone || "N/A",
         },
-        noteToDriver: driverNote || "N/A",
-        occasion: occasion || "N/A",
+        splitPaymentDetails: splitPaymentDetails || "N/A",
+        driverNote: driverNote || "N/A",
+        hourlyBookingCount: hourlyBookingCount || 0,
+        additionalVehicleCount: additionalVehicleCount || 0,
+        distanceStartToEnd: distanceStartToEnd || "N/A",
+        distanceStartToStop: distanceStartToStop || "N/A",
+        distanceStopToEnd: distanceStopToEnd || "N/A",
       };
 
-      const response = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bookingData),
-      });
+      const [emailResponse, stripeResponse] = await Promise.all([
+        sendEmail(bookingData),
+        createCheckoutSession(bookingData),
+      ]);
 
-      if (response.ok) {
-        const { sessionId } = await response.json();
-        const stripe = await stripePromise;
-        const { error } = await stripe.redirectToCheckout({ sessionId });
+      console.log("Email Response:", emailResponse);
+      console.log("Stripe Session:", stripeResponse);
 
-        if (error) {
-          console.error("Stripe redirect error:", error);
-          alert(
-            "There was an error with the payment process. Please try again."
-          );
-        }
-      } else {
-        const errorText = await response.text();
-        console.error("Error from server:", errorText);
-        alert(
-          "An error occurred while processing your booking. Please try again."
-        );
-      }
+      window.location.href = `https://checkout.stripe.com/pay/${stripeResponse.sessionId}`;
     } catch (error) {
-      console.error("Error during booking confirmation:", error);
+      console.error("An error occurred:", error);
       alert("An unexpected error occurred. Please try again.");
     }
   };
+
+  // const handleBookRideEmail = async () => {
+  //   // Example of sending booking data via email
+  //   try {
+  //     const response = await fetch("/api/send-email", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         orderNumber,
+  //         date,
+  //         time,
+  //         pickup: pickup?.name || "N/A",
+  //         destination: destination?.name || "N/A",
+  //         vehicleDetails: vehicleDetails || "N/A",
+  //         passengers: passengers || 1,
+  //         totalPrice,
+  //         contact: {
+  //           name: contact?.name || "N/A",
+  //           email: contact?.email || "N/A",
+  //           phone: contact?.phone || "N/A",
+  //         },
+  //         driverNote: driverNote || "N/A",
+  //         hourlyBookingCount: hourlyBookingCount || 0,
+  //         additionalVehicleCount: additionalVehicleCount || 0,
+  //         distanceStartToEnd: distanceStartToEnd || "N/A",
+  //         distanceStartToStop: distanceStartToStop || "N/A",
+  //         distanceStopToEnd: distanceStopToEnd || "N/A",
+  //       }),
+  //     });
+
+  //     if (response.ok) {
+  //       console.log("Email sent successfully");
+  //     } else {
+  //       console.error("Error sending email");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error during booking:", error);
+  //   }
+  // };
+
+  // const handleConfirmBookingFullPayment = async () => {
+  //   try {
+  //     const bookingData = {
+  //       orderNumber,
+  //       date,
+  //       time,
+  //       pickup: pickup?.name || "N/A",
+  //       destination: destination?.name || "N/A",
+  //       vehicleName: vehicleDetails?.name || "N/A",
+  //       passengers: passengers || 1,
+  //       distanceToEnd: distanceStartToEnd || 0,
+  //       additionalOptions,
+  //       hourlyBookingCount,
+  //       additionalVehicleCount,
+  //       totalPrice,
+  //       splitPaymentDetails,
+  //       contact: {
+  //         name: contact?.name || "N/A",
+  //         email: contact?.email || "N/A",
+  //         phone: contact?.phone || "N/A",
+  //       },
+  //       noteToDriver: driverNote || "N/A",
+  //       occasion: occasion || "N/A",
+  //     };
+
+  //     const response = await fetch("/api/create-checkout-session", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(bookingData),
+  //     });
+
+  //     if (response.ok) {
+  //       const { sessionId } = await response.json();
+  //       const stripe = await stripePromise;
+  //       const { error } = await stripe.redirectToCheckout({ sessionId });
+
+  //       if (error) {
+  //         console.error("Stripe redirect error:", error);
+  //         alert(
+  //           "There was an error with the payment process. Please try again."
+  //         );
+  //       }
+  //     } else {
+  //       const errorText = await response.text();
+  //       console.error("Error from server:", errorText);
+  //       alert(
+  //         "An error occurred while processing your booking. Please try again."
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error("Error during booking confirmation:", error);
+  //     alert("An unexpected error occurred. Please try again.");
+  //   }
+  // };
 
   // Calculate additional options total
   const additionalOptionsTotal = additionalOptions.reduce((acc, option) => {
@@ -416,17 +460,18 @@ const ReviewBooking = ({ setComponent }) => {
       </div>
 
       <button
-        onClick={async () => {
-          try {
-            await Promise.all([
-              handleBookRideEmail(),
-              handleConfirmBookingFullPayment(),
-            ]);
-          } catch (error) {
-            console.error("An error occurred:", error);
-            alert("An unexpected error occurred. Please try again.");
-          }
-        }}
+        onClick={handleBookRide}
+        // onClick={async () => {
+        //   try {
+        //     await Promise.all([
+        //       handleBookRideEmail(),
+        //       handleConfirmBookingFullPayment(),
+        //     ]);
+        //   } catch (error) {
+        //     console.error("An error occurred:", error);
+        //     alert("An unexpected error occurred. Please try again.");
+        //   }
+        // }}
         className="mt-4 lg:mt-0 w-full p-2 font-bold text-black bg-yellow-500 rounded-lg"
       >
         Book Ride
