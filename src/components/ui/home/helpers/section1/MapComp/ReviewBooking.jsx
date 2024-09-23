@@ -389,7 +389,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { sendEmail, createCheckoutSession } from "@/lib/api";
 
 const stripePromise = loadStripe(
-  "pk_test_51Pq6lbP8Zlv0bEA7rvroTMjkgAgffJh3sL3eBim3k0MvAuHcz1yvIsLbnINyKXoU0v2uVh01ABTGMWLx3yfsQryy00vpxd2RwL"
+  "pk_live_51Pq6lbP8Zlv0bEA7J4e3frprmo86W0ONlhv3H3HrtIZ5MnwGerQxr3T03zmnEZ7WtjLo0M2SY05tYONQ52GxD4cn00YMXJwFo9"
 );
 
 const ReviewBooking = ({ setComponent }) => {
