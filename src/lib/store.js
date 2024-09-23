@@ -179,10 +179,96 @@ const useStore = create(
         return {
           ...state,
           totalPrice,
+          distanceFare, // Store distanceFare in the state
           additionalVehicleExtraAmount, // Store extra amount added by additional vehicles
           luggageTrailerExtraAmount, // Store extra amount added by luggage trailer
         };
       }),
+
+    // calculateTotalPrice: () =>
+    //   set((state) => {
+    //     const distance =
+    //       state.distanceStartToEnd +
+    //       state.distanceStartToStop +
+    //       state.distanceStopToEnd;
+
+    //     // Determine base fare and per-km rate based on vehicle type
+    //     let baseFare = 0;
+    //     let perKmFare = 0;
+
+    //     if (state.vehicleType === "smallVan") {
+    //       baseFare = 40; // Van base fare for 5km
+    //       perKmFare = 4.5; // Van per km fare
+    //     } else if (state.vehicleType === "largeVan") {
+    //       baseFare = 60; // Mini Bus base fare for 5km
+    //       perKmFare = 6.5; // Mini Bus per km fare
+    //     } else if (state.vehicleType === "bus") {
+    //       baseFare = 90; // Bus base fare for 5km
+    //       perKmFare = 9.5; // Bus per km fare
+    //     }
+
+    //     // Calculate additional fare for distance beyond the base 5km
+    //     const distanceFare = distance > 5 ? (distance - 5) * perKmFare : 0;
+
+    //     // Calculate the total vehicle cost (base fare + distance fare) for 1 vehicle
+    //     let totalVehiclePrice = baseFare + distanceFare;
+
+    //     let additionalVehicleExtraAmount = 0;
+    //     let luggageTrailerExtraAmount = 0;
+
+    //     // Calculate the additional options cost (excluding vehicles and luggage trailer, which are handled separately)
+    //     const additionalOptionsCost = state.additionalOptions.reduce(
+    //       (acc, option) => {
+    //         const optionDetails = state.options.find(
+    //           (opt) => opt.name === option
+    //         );
+    //         const optionPrice = optionDetails?.price.replace("$", "") || 0;
+
+    //         if (option === "Hourly Bookings") {
+    //           return (
+    //             acc + state.vehicleDetails.hourlyRate * state.hourlyBookingCount
+    //           );
+    //         } else if (
+    //           option === "Add More Vehicles" ||
+    //           option === "Luggage Trailer"
+    //         ) {
+    //           // Price already handled separately
+    //           return acc;
+    //         } else {
+    //           return acc + parseFloat(optionPrice);
+    //         }
+    //       },
+    //       0
+    //     );
+
+    //     // Add luggage trailer cost if selected
+    //     if (state.additionalOptions.includes("Luggage Trailer")) {
+    //       if (
+    //         state.vehicleType === "smallVan" ||
+    //         state.vehicleType === "largeVan"
+    //       ) {
+    //         luggageTrailerExtraAmount = 20;
+    //       } else if (state.vehicleType === "bus") {
+    //         luggageTrailerExtraAmount = 30;
+    //       }
+    //     }
+
+    //     // Calculate the total price for one vehicle, including additional options
+    //     let totalPrice =
+    //       totalVehiclePrice + additionalOptionsCost + luggageTrailerExtraAmount;
+
+    //     // If additional vehicles are selected, multiply the entire total price by the vehicle count (including the original one)
+    //     if (state.additionalOptions.includes("Add More Vehicles")) {
+    //       totalPrice *= state.additionalVehicleCount + 1; // Including the original vehicle
+    //     }
+
+    //     return {
+    //       ...state,
+    //       totalPrice,
+    //       additionalVehicleExtraAmount, // Store extra amount added by additional vehicles
+    //       luggageTrailerExtraAmount, // Store extra amount added by luggage trailer
+    //     };
+    //   }),
 
     setDistances: (distances) => set((state) => ({ ...state, ...distances })),
   }))
