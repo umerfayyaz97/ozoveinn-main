@@ -543,8 +543,8 @@ const ReviewBooking = ({ setComponent }) => {
         createCheckoutSession(bookingData),
       ]);
 
-      console.log("Email Response:", emailResponse);
-      console.log("Stripe Session:", stripeResponse);
+      // console.log("Email Response:", emailResponse);
+      // console.log("Stripe Session:", stripeResponse);
 
       // Use Stripe's redirectToCheckout to redirect the user to the payment page
       const stripe = await stripePromise;
