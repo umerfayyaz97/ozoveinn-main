@@ -552,7 +552,7 @@ const ReviewBooking = ({ setComponent }) => {
       await stripe.redirectToCheckout({ sessionId });
     } catch (error) {
       console.error("An error occurred:", error);
-      alert("An unexpected error occurred. Please try again.");
+      // alert("An unexpected error occurred. Please try again.");
       alert(`An unexpected error occurred: ${error.message || error}`);
     }
   };
